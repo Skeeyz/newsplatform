@@ -147,12 +147,12 @@ export function Header() {
           >
             <HomeIcon className="h-[21px] w-[21px] text-white" />
           </Link>
-          <nav className="flex items-center h-full text-xs font-bold tracking-wider">
+          <nav className="flex-1 flex h-full text-[11px] lg:text-xs font-bold tracking-wider">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="px-5 lg:px-7 h-full flex items-center hover:bg-[#333333] hover:text-[#ffd600] transition-colors border-r border-[#2d2d2d]"
+                className="flex-1 px-2 h-full flex items-center justify-center hover:bg-[#333333] hover:text-[#ffd600] transition-colors border-r border-[#2d2d2d] text-center whitespace-nowrap"
               >
                 {item.label}
               </Link>
