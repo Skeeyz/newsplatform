@@ -2,18 +2,21 @@ import Link from "next/link";
 
 const featuredArticles = [
   {
+    id: "featured-1",
     image: "/soulslike_game.png",
     title: "Vừa ra mắt, tựa game Soulslike mới trên Steam đã nhận rating 97% tích cực, phong cách chơi cực sáng tạo",
     category: "Game Steam",
     time: "2 giờ trước",
   },
   {
+    id: "featured-2",
     image: "/gta6_beta.png",
     title: "Hào hứng trải nghiệm beta sớm của GTA 6, hàng loạt game thủ nhận cái kết \"trong mơ cũng không nghĩ tới\"",
     category: "GTA 6",
     time: "1 giờ trước",
   },
   {
+    id: "featured-3",
     image: "/esports_news.png",
     title: "HLE vào nhánh thắng Road to MSI 2026 nhưng cũng khiến fan dấy lên nỗi lo",
     category: "Liên Minh Huyền Thoại",
@@ -21,6 +24,7 @@ const featuredArticles = [
     badge: "Liên Minh Huyền Thoại",
   },
   {
+    id: "featured-4",
     image: "/video_news.png",
     title: "Video Trần Hà Linh bị \"giật tóc\" thu hút gần 8 triệu lượt xem, CĐM tò mò đi tìm nguyên nhân",
     category: "Đời sống",
@@ -29,34 +33,38 @@ const featuredArticles = [
 ];
 
 const mainArticles = [
-  { category: "ANIME/MANGA", title: "Anime mùa hè 2026: Top những bộ không thể bỏ qua", time: "1 giờ trước" },
-  { category: "GAME MOBILE", title: "Tựa game bắn súng sinh tồn mobile mở đợt thử nghiệm thứ 2 cực hot", time: "3 giờ trước" },
-  { category: "CÔNG NGHỆ", title: "Thế hệ card đồ họa tiếp theo hứa hẹn tăng gấp đôi hiệu năng xử lý AI", time: "5 giờ trước" },
-  { category: "PHIM/FILM", title: "Bom tấn rạp chiếu phim đạt doanh thu kỷ lục chỉ sau 3 ngày ra mắt", time: "6 giờ trước" },
-  { category: "GAMING GEAR", title: "Trên tay bàn phím cơ hot-swap giá rẻ đáng mua nhất phân khúc giá rẻ", time: "8 giờ trước" },
-  { category: "CỘNG ĐỒNG", title: "Group game thủ chia sẻ hàng loạt bí mật giấu kín suốt 10 năm qua", time: "10 giờ trước" },
+  {
+    id: "hanoi-nang-nong-38-7",
+    category: "TIN TỨC",
+    title: "Hà Nội ghi nhận mức nhiệt cao nhất cả nước: Trung tâm Thủ đô nóng ngột ngạt khó thở, người dân vật vã giữa \"chảo lửa\" 38,7 độ C",
+    time: "24/05/2026 15:18",
+    image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=600&auto=format&fit=crop"
+  },
+  { id: "main-1", category: "ANIME/MANGA", title: "Anime mùa hè 2026: Top những bộ không thể bỏ qua", time: "1 giờ trước" },
+  { id: "main-2", category: "GAME MOBILE", title: "Tựa game bắn súng sinh tồn mobile mở đợt thử nghiệm thứ 2 cực hot", time: "3 giờ trước" },
+  { id: "main-3", category: "CÔNG NGHỆ", title: "Thế hệ card đồ họa tiếp theo hứa hẹn tăng gấp đôi hiệu năng xử lý AI", time: "5 giờ trước" },
+  { id: "main-4", category: "PHIM/FILM", title: "Bom tấn rạp chiếu phim đạt doanh thu kỷ lục chỉ sau 3 ngày ra mắt", time: "6 giờ trước" },
+  { id: "main-5", category: "GAMING GEAR", title: "Trên tay bàn phím cơ hot-swap giá rẻ đáng mua nhất phân khúc giá rẻ", time: "8 giờ trước" },
 ];
 
 const categoryArticles = [
   {
     section: "ANIME/MANGA",
     items: [
-      { title: "One Piece chương mới: Bí ẩn kho báu thế giới cổ đại dần hé lộ", time: "30 phút trước" },
-      { title: "Sát Thủ Diệt Quỷ phần tiếp theo chính thức khởi chiếu tại cụm rạp", time: "2 giờ trước" },
-      { title: "Bảng xếp hạng manga bán chạy nhất nửa đầu năm 2026", time: "4 giờ trước" },
+      { id: "anime-1", title: "One Piece chương mới: Bí ẩn kho báu thế giới cổ đại dần hé lộ", time: "30 phút trước" },
+      { id: "anime-2", title: "Sát Thủ Diệt Quỷ phần tiếp theo chính thức khởi chiếu tại cụm rạp", time: "2 giờ trước" },
+      { id: "anime-3", title: "Bảng xếp hạng manga bán chạy nhất nửa đầu năm 2026", time: "4 giờ trước" },
     ],
   },
   {
     section: "CÔNG NGHỆ",
     items: [
-      { title: "Thử nghiệm chip xử lý di động mới nhất trên các game đồ họa nặng", time: "1 giờ trước" },
-      { title: "Có nên nâng cấp lên chuẩn RAM thế hệ mới ở thời điểm hiện tại?", time: "3 giờ trước" },
-      { title: "Tốc độ đọc ghi ổ cứng SSD thế hệ thứ 5 đạt kỷ lục ấn tượng", time: "5 giờ trước" },
+      { id: "tech-1", title: "Thử nghiệm chip xử lý di động mới nhất trên các game đồ họa nặng", time: "1 giờ trước" },
+      { id: "tech-2", title: "Có nên nâng cấp lên chuẩn RAM thế hệ mới ở thời điểm hiện tại?", time: "3 giờ trước" },
+      { id: "tech-3", title: "Tốc độ đọc ghi ổ cứng SSD thế hệ thứ 5 đạt kỷ lục ấn tượng", time: "5 giờ trước" },
     ],
   },
 ];
-
-
 
 const categoryBadgeColor: Record<string, string> = {
   "TIN TỨC": "bg-brand-red",
@@ -90,7 +98,7 @@ export default function HomePage() {
           />
         </a>
         <div className="absolute top-1 right-1 bg-black/40 hover:bg-black/70 text-white/90 text-[9px] px-1 py-0.5 cursor-pointer rounded select-none">
-          Quảng cáo ×
+          Quảng cáo &times;
         </div>
       </div>
 
@@ -100,10 +108,11 @@ export default function HomePage() {
         <div className="w-full lg:w-[650px] flex-shrink-0 space-y-5">
           {/* 2x2 Grid of Featured Articles */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            {featuredArticles.map((article, index) => (
-              <div
-                key={index}
-                className="relative group cursor-pointer overflow-hidden border border-gray-100 rounded-sm bg-black aspect-[4/3] shadow-sm"
+            {featuredArticles.map((article) => (
+              <Link
+                key={article.id}
+                href={`/posts/${article.id}`}
+                className="relative group cursor-pointer overflow-hidden border border-gray-100 rounded-sm bg-black aspect-[4/3] shadow-sm block"
               >
                 <img
                   src={article.image}
@@ -128,7 +137,7 @@ export default function HomePage() {
                     <span>{article.time}</span>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 
@@ -142,19 +151,20 @@ export default function HomePage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {mainArticles.map((article, i) => (
-                <div
-                  key={i}
+              {mainArticles.map((article) => (
+                <Link
+                  key={article.id}
+                  href={`/posts/${article.id}`}
                   className="group flex gap-3 cursor-pointer p-2 border border-gray-100 rounded bg-white hover:bg-gray-50 transition-colors shadow-sm"
                 >
                   <div className="bg-gray-100 w-24 h-18 sm:w-28 sm:h-20 flex-shrink-0 overflow-hidden border border-gray-200">
                     <img
-                      src={`/placeholder.svg`}
+                      src={article.image || "/placeholder.svg"}
                       alt="Thumbnail"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
-                  <div className="flex flex-col justify-between py-0.5">
+                  <div className="flex flex-col justify-between py-0.5 flex-1">
                     <div>
                       <div className="mb-1">
                         <CategoryBadge category={article.category} />
@@ -165,7 +175,7 @@ export default function HomePage() {
                     </div>
                     <span className="text-gray-400 text-[10px] mt-1">{article.time}</span>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -187,7 +197,10 @@ export default function HomePage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {/* Main Article in Category */}
-                <div className="sm:col-span-1 group cursor-pointer border border-gray-200 rounded overflow-hidden hover:shadow-sm transition-shadow bg-white p-2">
+                <Link
+                  href={`/posts/${section.items[0].id}`}
+                  className="sm:col-span-1 group cursor-pointer border border-gray-200 rounded overflow-hidden hover:shadow-sm transition-shadow bg-white p-2 block"
+                >
                   <div className="bg-gray-100 w-full aspect-video overflow-hidden border border-gray-100 mb-2">
                     <img
                       src="/placeholder.svg"
@@ -202,14 +215,15 @@ export default function HomePage() {
                     </h3>
                     <span className="text-gray-400 text-[10px] block">{section.items[0].time}</span>
                   </div>
-                </div>
+                </Link>
 
                 {/* Sub Articles List */}
                 <div className="sm:col-span-2 flex flex-col gap-2.5">
-                  {section.items.slice(1).map((item, j) => (
-                    <div
-                      key={j}
-                      className="group flex gap-3 cursor-pointer p-2 border border-gray-100 rounded bg-white hover:bg-gray-50 transition-colors"
+                  {section.items.slice(1).map((item) => (
+                    <Link
+                      key={item.id}
+                      href={`/posts/${item.id}`}
+                      className="group flex gap-3 cursor-pointer p-2 border border-gray-100 rounded bg-white hover:bg-gray-50 transition-colors block"
                     >
                       <div className="bg-gray-100 w-20 h-14 flex-shrink-0 overflow-hidden border border-gray-150">
                         <img
@@ -224,7 +238,7 @@ export default function HomePage() {
                         </h4>
                         <span className="text-gray-400 text-[10px] mt-1">{item.time}</span>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -244,7 +258,7 @@ export default function HomePage() {
               />
             </a>
             <div className="absolute top-1 right-1 bg-black/45 hover:bg-black/75 text-white/90 text-[9px] px-1.5 py-0.5 cursor-pointer rounded select-none z-10 transition-colors">
-              Quảng cáo ×
+              Quảng cáo &times;
             </div>
           </div>
 
@@ -258,7 +272,7 @@ export default function HomePage() {
               />
             </a>
             <div className="absolute top-1 right-1 bg-black/45 hover:bg-black/75 text-white/90 text-[9px] px-1.5 py-0.5 cursor-pointer rounded select-none z-10 transition-colors">
-              Quảng cáo ×
+              Quảng cáo &times;
             </div>
           </div>
 
@@ -272,7 +286,7 @@ export default function HomePage() {
               />
             </a>
             <div className="absolute top-1 right-1 bg-black/45 hover:bg-black/75 text-white/90 text-[9px] px-1.5 py-0.5 cursor-pointer rounded select-none z-10 transition-colors">
-              Quảng cáo ×
+              Quảng cáo &times;
             </div>
           </div>
         </div>
