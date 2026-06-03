@@ -56,13 +56,7 @@ const categoryArticles = [
   },
 ];
 
-const trending = [
-  "Top 10 tựa game thế giới mở hay nhất năm 2026",
-  "Cách tối ưu hóa hiệu năng PC chơi game mượt mà nhất",
-  "Hướng dẫn nạp thẻ game an toàn và tránh lừa đảo",
-  "Review game hành động góc nhìn thứ ba siêu đỉnh mới ra mắt",
-  "Cách tự dựng cấu hình PC gaming dưới 15 triệu đồng",
-];
+
 
 const categoryBadgeColor: Record<string, string> = {
   "TIN TỨC": "bg-brand-red",
@@ -239,97 +233,46 @@ export default function HomePage() {
         </div>
 
         {/* Right Column: Sidebar (Width matches GameK desktop 300px) */}
-        <div className="w-full lg:w-[310px] flex-shrink-0 space-y-5">
-          {/* Vertical Toilet Advertisement (Zento ad) */}
-          <div className="relative w-full overflow-hidden rounded border border-gray-200 bg-gray-50 flex justify-center group">
+        <div className="w-full lg:w-[310px] flex-shrink-0 space-y-4">
+          {/* Ad 1: Zento Premium Cabinet */}
+          <div className="relative w-full overflow-hidden rounded border border-gray-200 bg-gray-50 flex justify-center group shadow-sm">
             <a href="#" className="block w-full">
               <img
-                src="/zento_toilet_ad.png"
-                alt="Zento Premium Toilet Banner Ad"
-                className="w-full h-auto object-cover max-h-[450px]"
+                src="/zento_cabinet_ad.png"
+                alt="Zento Premium Cabinet Ad"
+                className="w-full h-auto object-cover"
               />
             </a>
-            <div className="absolute top-1 right-1 bg-black/40 hover:bg-black/70 text-white/90 text-[9px] px-1 py-0.5 cursor-pointer rounded select-none">
+            <div className="absolute top-1 right-1 bg-black/45 hover:bg-black/75 text-white/90 text-[9px] px-1.5 py-0.5 cursor-pointer rounded select-none z-10 transition-colors">
               Quảng cáo ×
             </div>
           </div>
 
-          {/* DÀNH CHO BẠN Widget */}
-          <div className="border border-gray-200 rounded overflow-hidden bg-white shadow-sm">
-            <div className="bg-gray-100 px-3 py-2 border-b border-gray-200 flex justify-between items-center">
-              <h2 className="text-[#333] font-bold text-xs uppercase tracking-wide">Dành cho bạn</h2>
-              <span className="text-gray-400 text-[10px] font-bold">››</span>
-            </div>
-            <div className="divide-y divide-gray-150">
-              {[
-                { title: "Phim 18+ gây sốt toàn thế giới hé lộ thêm nhiều cảnh hậu trường nóng bỏng", desc: "Anime hot" },
-                { title: "Top 5 bàn phím cơ gõ sướng nhất mà game thủ chuyên nghiệp khuyên dùng", desc: "Gaming Gear" },
-                { title: "Vừa ra mắt, game mobile bắn súng sinh tồn đạt ngay 5 triệu lượt đăng ký", desc: "Game Mobile" },
-              ].map((item, i) => (
-                <div key={i} className="p-2.5 hover:bg-gray-50 cursor-pointer group transition-colors">
-                  <div className="flex gap-2">
-                    <div className="bg-gray-200 w-12 h-10 flex-shrink-0 overflow-hidden rounded">
-                      <img src="/placeholder.svg" className="w-full h-full object-cover" alt="small thumb" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <span className="text-[10px] text-brand-red font-bold uppercase">{item.desc}</span>
-                      <p className="text-gray-700 font-bold text-xs leading-snug line-clamp-2 mt-0.5 group-hover:text-brand-red transition-colors">
-                        {item.title}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
+          {/* Ad 2: ZTC Massage Bathtub */}
+          <div className="relative w-full overflow-hidden rounded border border-gray-200 bg-gray-50 flex justify-center group shadow-sm">
+            <a href="#" className="block w-full">
+              <img
+                src="/ztc_bathtub_ad.png"
+                alt="ZTC Massage Bathtub Ad"
+                className="w-full h-auto object-cover"
+              />
+            </a>
+            <div className="absolute top-1 right-1 bg-black/45 hover:bg-black/75 text-white/90 text-[9px] px-1.5 py-0.5 cursor-pointer rounded select-none z-10 transition-colors">
+              Quảng cáo ×
             </div>
           </div>
 
-          {/* TRENDING Widget */}
-          <div className="border border-gray-200 rounded overflow-hidden bg-white shadow-sm">
-            <div className="bg-brand-red px-3 py-2">
-              <h2 className="text-white font-bold text-xs uppercase tracking-wide">Trending</h2>
-            </div>
-            <div className="divide-y divide-gray-100">
-              {trending.map((title, i) => (
-                <div
-                  key={i}
-                  className="flex gap-2.5 p-3 hover:bg-gray-50 cursor-pointer group transition-colors"
-                >
-                  <span className="text-brand-red font-black text-sm w-5 flex-shrink-0 leading-tight text-center">
-                    {i + 1}
-                  </span>
-                  <p className="text-gray-700 font-bold text-xs leading-snug group-hover:text-brand-red transition-colors">
-                    {title}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* CHỦ ĐỀ HOT Widget */}
-          <div className="border border-gray-200 rounded overflow-hidden bg-white shadow-sm">
-            <div className="bg-[#2a2a2a] px-3 py-2">
-              <h2 className="text-white font-bold text-xs uppercase tracking-wide">Chủ đề hot</h2>
-            </div>
-            <div className="p-3 flex flex-wrap gap-1.5">
-              {[
-                "RPG",
-                "FPS",
-                "MOBA",
-                "Anime 2026",
-                "Manga",
-                "PC Gaming",
-                "Mobile Game",
-                "Review",
-                "Hướng dẫn",
-                "Esports",
-              ].map((tag) => (
-                <span
-                  key={tag}
-                  className="bg-gray-100 hover:bg-brand-red hover:text-white text-gray-600 text-[10px] font-bold px-2.5 py-1 rounded transition-colors cursor-pointer"
-                >
-                  {tag}
-                </span>
-              ))}
+          {/* Ad 3: Zento Premium Toilet */}
+          <div className="relative w-full overflow-hidden rounded border border-gray-200 bg-gray-50 flex justify-center group shadow-sm">
+            <a href="#" className="block w-full">
+              <img
+                src="/zento_toilet_ad.png"
+                alt="Zento Premium Toilet Banner Ad"
+                className="w-full h-auto object-cover"
+              />
+            </a>
+            <div className="absolute top-1 right-1 bg-black/45 hover:bg-black/75 text-white/90 text-[9px] px-1.5 py-0.5 cursor-pointer rounded select-none z-10 transition-colors">
+              Quảng cáo ×
             </div>
           </div>
         </div>
