@@ -27,6 +27,20 @@ export default function HomePage() {
 
   return (
     <main className="w-full px-3 md:px-0 py-4 font-sans text-xs">
+      {/* Top Banner Advertisement (Vietnam Airlines ad) */}
+      <div className="relative w-full md:w-[970px] md:h-[250px] overflow-hidden rounded border border-gray-200 mb-4 bg-gray-50 group mx-auto">
+        <a href="#" className="block w-full h-full">
+          <img
+            src="/vietnam_airlines_ad.png"
+            alt="Vietnam Airlines Banner Perth"
+            className="w-full h-full object-cover"
+          />
+        </a>
+        <div className="absolute top-1 right-1 bg-black/40 hover:bg-black/70 text-white/90 text-[9px] px-1.5 py-0.5 cursor-pointer rounded select-none">
+          Quảng cáo &times;
+        </div>
+      </div>
+
       {/* Main Two-Column Layout */}
       <div className="flex flex-col lg:flex-row gap-5 items-start">
         {/* Left Column: Articles */}
@@ -48,10 +62,16 @@ export default function HomePage() {
               <h2 className="text-gray-900 font-bold text-base sm:text-[19px] leading-snug tracking-tight mt-3 mb-2 font-sans group-hover:text-brand-red transition-colors">
                 {featuredArticle.title}
               </h2>
-              {/* Thick solid red horizontal line below the title */}
-              <div className="w-full h-[3px] bg-[#e24a48] mt-2.5 mb-1" />
             </Link>
           )}
+
+          {/* "MỚI NHẤT" Category Header */}
+          <div className="flex items-center gap-2 border-b-2 border-[#e24a48] pb-1 mt-2 mb-1">
+            <span className="bg-[#e24a48] text-white font-bold text-[11px] px-3 py-1 uppercase tracking-wider rounded-sm">
+              Mới nhất
+            </span>
+            <div className="flex-1 h-px bg-gray-200" />
+          </div>
 
           {/* List of Articles Stretching Down */}
           <div className="flex flex-col bg-white border border-gray-200 rounded-sm p-4 shadow-sm divide-y divide-gray-200">

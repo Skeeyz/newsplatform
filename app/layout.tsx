@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="flex-1">
             {children}
           </div>
-          <footer className="mt-8 bg-[#333] border-t-4 border-brand-red text-white">
+          <footer className="mt-0 bg-[#333] border-t-4 border-brand-red text-white">
             <div className="px-4 py-8">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div>
