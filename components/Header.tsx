@@ -125,12 +125,11 @@ export function Header({ settings }: HeaderProps) {
           <HomeIcon className="h-[21px] w-[21px] text-white" />
         </Link>
         <nav className="flex-1 flex h-full text-[11px] lg:text-xs font-bold tracking-wider">
-              {utilityLink && utilityLink.href ? (
+          {settings.primaryLinks.map((item) => {
             const isActive = pathname === item.href;
+
             return (
               <Link
-              ) : utilityLink ? (
-                <span className="text-gray-600 font-bold">{utilityLink.label}</span>
                 key={`${item.label}-${item.href}`}
                 href={item.href}
                 className={`flex-1 px-2 h-full flex items-center justify-center transition-colors border-r border-[#2d2d2d] text-center whitespace-nowrap relative ${
