@@ -14,6 +14,7 @@ export class ApiError extends Error {
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "");
+const DEFAULT_API_TIMEOUT_MS = 8000;
 
 export function isRemoteApiEnabled() {
   return process.env.NEXT_PUBLIC_USE_MOCKS === "false" && Boolean(API_BASE_URL);
@@ -24,13 +25,37 @@ export async function apiGet<T>(path: string, init?: RequestInit): Promise<T> {
     throw new ApiError("NEXT_PUBLIC_API_BASE_URL is not configured.", 500);
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...init,
-    headers: {
-      Accept: "application/json",
-      ...init?.headers,
-    },
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), DEFAULT_API_TIMEOUT_MS);
+
+  if (init?.signal) {
+    if (init.signal.aborted) {
+      controller.abort();
+    } else {
+      init.signal.addEventListener("abort", () => controller.abort(), {
+        once: true,
+      });
+    }
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...init,
+      headers: {
+        Accept: "application/json",
+        ...init?.headers,
+      },
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (controller.signal.aborted) {
+      throw new ApiError(`Request timed out: GET ${path}`, 504);
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
 
   if (!response.ok) {
     throw new ApiError(`Request failed: GET ${path}`, response.status);
