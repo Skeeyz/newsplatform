@@ -1757,31 +1757,40 @@ export default function AdminPage() {
           CONFIRM DELETE DIALOG
           ========================================== */}
       <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <DialogContent className="max-w-sm w-[90%] rounded-2xl p-6 border-none shadow-2xl bg-white text-[#2c3e50] outline-none">
-          <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-gray-900 flex items-center gap-2">
-              <span>Xác nhận xóa</span>
+        <DialogContent className="max-w-[460px] w-[95%] rounded-[24px] p-6 border border-gray-100 shadow-2xl bg-white text-[#2c3e50] outline-none [&>button]:hidden">
+          <DialogHeader className="border-b border-gray-150 pb-3 -mx-6 px-6">
+            <DialogTitle className="text-xl font-bold text-gray-900 text-left">
+              {activeTab === "posts" && "Xóa bài viết"}
+              {activeTab === "categories" && "Xóa danh mục"}
+              {activeTab === "ads" && "Xóa quảng cáo"}
             </DialogTitle>
           </DialogHeader>
 
-          <div className="py-2 text-sm text-gray-600">
-            Bạn có chắc chắn muốn xóa bản ghi này khỏi cơ sở dữ liệu? Hành động này không thể hoàn tác.
+          <div className="py-6 text-center space-y-2">
+            <h3 className="text-xl font-bold text-gray-900 leading-snug">
+              {activeTab === "posts" && "Bạn có chắc chắn muốn xóa bài viết"}
+              {activeTab === "categories" && "Bạn có chắc chắn muốn xóa danh mục"}
+              {activeTab === "ads" && "Bạn có chắc chắn muốn xóa quảng cáo"}
+            </h3>
+            <p className="text-sm font-semibold text-[#E55956]">
+              Dữ liệu bị xóa sẽ không thể khôi phục
+            </p>
           </div>
 
-          <DialogFooter className="flex flex-row items-center justify-end gap-2.5 pt-4">
+          <div className="flex items-center justify-center gap-6 pb-2">
             <button
               onClick={() => setDeleteConfirmOpen(false)}
-              className="px-4.5 py-2 border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm font-bold rounded-xl transition-all"
+              className="w-36 py-3 border border-gray-200 hover:bg-gray-50 text-gray-900 text-lg font-bold rounded-xl transition-all shadow-sm flex items-center justify-center"
             >
-              Hủy
+              Không
             </button>
             <button
               onClick={executeDelete}
-              className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-xl transition-all shadow-md"
+              className="w-36 py-3 bg-[#e86b6b] hover:bg-[#e55956] text-white text-lg font-bold rounded-xl transition-all shadow-md flex items-center justify-center"
             >
-              Đồng ý xóa
+              Có
             </button>
-          </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
 
