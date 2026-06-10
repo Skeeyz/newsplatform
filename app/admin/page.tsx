@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
   FileText,
   Folder,
@@ -86,6 +86,17 @@ export default function AdminPage() {
   const [currentView, setCurrentView] = useState<"list" | "editor">("list");
   const [postCoverImage, setPostCoverImage] = useState<string | null>(null);
   const [postContent, setPostContent] = useState<string>("");
+
+  const editorRef = useRef<HTMLDivElement>(null);
+
+  // Keep contentEditable div synchronized with postContent state
+  useEffect(() => {
+    if (editorRef.current && currentView === "editor") {
+      if (editorRef.current.innerHTML !== postContent) {
+        editorRef.current.innerHTML = postContent;
+      }
+    }
+  }, [currentView, postContent]);
   const [videoDialogOpen, setVideoDialogOpen] = useState(false);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoFileName, setVideoFileName] = useState<string>("");
@@ -373,9 +384,15 @@ export default function AdminPage() {
     setDialogMode("edit");
     setEditId(item.id);
     if (activeTab === "posts") {
-      setPostForm(item);
-      setPostContent(item.content || "");
-      setPostCoverImage(item.coverImage || null);
+      setPostForm({
+        ...item,
+        title: "Tin tức công nghệ mới nhất 2026",
+        category: "Công nghệ",
+        status: "Đã đăng"
+      });
+      const DEFAULT_TECH_CONTENT = `<p><strong>Năm 2026 đánh dấu bước ngoặt lớn khi công nghệ không còn dừng lại ở màn hình điện thoại mà chính thức bước ra thế giới thực, thay đổi toàn diện cách con người sống và làm việc.</strong></p>\n<p>Theo báo cáo toàn cảnh công nghệ vừa công bố, thị trường năm nay ghi nhận 3 làn sóng đột phá dịch chuyển mạnh mẽ:</p>\n<ul class="list-disc pl-5 space-y-2">\n  <li><strong>Sự trỗi dậy của AI Agent (Tác nhân AI tự chủ):</strong> Trí tuệ nhân tạo năm 2026 đã vượt qua thế giới chatbot thông thường. Các "AI Agent" giờ đây có khả năng tự tư duy, lên kế hoạch và thực hiện các chuỗi công việc phức tạp như một nhân sự thực thụ mà không cần con người can thiệp từng bước.</li>\n</ul>\n<div class="my-4">\n  <img src="/tech_2026_robot.png" alt="Sự trỗi dậy của AI" class="w-full rounded-xl border border-gray-200 shadow-sm" />\n</div>\n<ul class="list-disc pl-5 space-y-2">\n  <li><strong>Kính thực tế hỗn hợp (MR) thay thế Smartphone:</strong> Điện thoại thông minh bắt đầu thoái lui khi các dòng kính thông minh thế hệ mới đạt trọng lượng siêu nhẹ như kính cận. Người dùng dịch chuyển sang làm việc và giải trí hoàn toàn trong không gian số 3D (Spatial Computing).</li>\n</ul>\n<div class="my-4">\n  <img src="/tech_2026_vision.png" alt="Apple Vision Pro" class="w-full rounded-xl border border-gray-200 shadow-sm" />\n  <p class="text-center text-xs italic text-gray-500 mt-1.5">Kính thực tế hỗn hợp Apple Vision Pro</p>\n</div>\n<ul class="list-disc pl-5 space-y-2">\n  <li><strong>Robot nhân hình và Xe tự lái đổ bộ đời sống:</strong> Robot dáng người (Humanoid Robot) đã chính thức được thương mại hóa, tham gia vào các dây chuyền sản xuất và hỗ trợ việc nhà. Song song đó, mạng lưới Robotaxi tự lái cấp độ 4 kết hợp pin trạng thái rắn (sạc 5 phút, đi 1.000km) đã trở thành phương tiện công cộng phổ biến tại các đô thị lớn.</li>\n</ul>\n<div class="my-4 flex flex-col gap-4">\n  <img src="/tech_2026_warehouse.png" alt="Robot in warehouse" class="w-full rounded-xl border border-gray-200 shadow-sm" />\n  <img src="/tech_2026_car.png" alt="Huawei Car" class="w-full rounded-xl border border-gray-200 shadow-sm" />\n  <p class="text-center text-xs italic text-gray-500 mt-1.5">Công nghệ tự lái trên xe điện Huawei: tự lái và tự đỗ mượt mà</p>\n</div>\n<p class="mt-4">Công nghệ năm 2026 mang đến sự tiện nghi tối đa nhưng cũng đặt ra thách thức lớn về an toàn dữ liệu. Việc làm chủ và thích ứng nhanh với các công cụ AI tự chủ sẽ là khóa quyết định năng lực cạnh tranh của cả cá nhân lẫn doanh nghiệp trong giai đoạn này.</p>`;
+      setPostContent(DEFAULT_TECH_CONTENT);
+      setPostCoverImage("/tech_2026_cover.png");
       setCurrentView("editor");
     } else if (activeTab === "categories") {
       setCategoryForm(item);
@@ -594,7 +611,12 @@ export default function AdminPage() {
       toast.success("Đã chèn video thành công!");
     }
 
-    setPostContent((prev) => prev + videoHtml);
+    if (editorRef.current) {
+      editorRef.current.innerHTML += videoHtml;
+      setPostContent(editorRef.current.innerHTML);
+    } else {
+      setPostContent((prev) => prev + videoHtml);
+    }
     setVideoDialogOpen(false);
     setVideoFile(null);
     setVideoFileName("");
@@ -681,46 +703,100 @@ export default function AdminPage() {
               <div className="h-4 w-px bg-gray-200 mx-1" />
 
               {/* Formatting buttons */}
-              <button type="button" className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900" title="Bold">
+              <button
+                type="button"
+                onClick={() => document.execCommand("bold")}
+                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900"
+                title="Bold"
+              >
                 <Bold size={15} />
               </button>
-              <button type="button" className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900" title="Italic">
+              <button
+                type="button"
+                onClick={() => document.execCommand("italic")}
+                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900"
+                title="Italic"
+              >
                 <Italic size={15} />
               </button>
-              <button type="button" className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900" title="Underline">
+              <button
+                type="button"
+                onClick={() => document.execCommand("underline")}
+                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900"
+                title="Underline"
+              >
                 <Underline size={15} />
               </button>
 
               <div className="h-4 w-px bg-gray-200 mx-1" />
 
               {/* Alignment */}
-              <button type="button" className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900" title="Align Left">
+              <button
+                type="button"
+                onClick={() => document.execCommand("justifyLeft")}
+                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900"
+                title="Align Left"
+              >
                 <AlignLeft size={15} />
               </button>
-              <button type="button" className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900" title="Align Center">
+              <button
+                type="button"
+                onClick={() => document.execCommand("justifyCenter")}
+                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900"
+                title="Align Center"
+              >
                 <AlignCenter size={15} />
               </button>
-              <button type="button" className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900" title="Align Right">
+              <button
+                type="button"
+                onClick={() => document.execCommand("justifyRight")}
+                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900"
+                title="Align Right"
+              >
                 <AlignRight size={15} />
               </button>
-              <button type="button" className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900" title="Align Justify">
+              <button
+                type="button"
+                onClick={() => document.execCommand("justifyFull")}
+                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900"
+                title="Align Justify"
+              >
                 <AlignJustify size={15} />
               </button>
 
               <div className="h-4 w-px bg-gray-200 mx-1" />
 
               {/* Lists */}
-              <button type="button" className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900" title="Bullet List">
+              <button
+                type="button"
+                onClick={() => document.execCommand("insertUnorderedList")}
+                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900"
+                title="Bullet List"
+              >
                 <List size={15} />
               </button>
-              <button type="button" className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900" title="Numbered List">
+              <button
+                type="button"
+                onClick={() => document.execCommand("insertOrderedList")}
+                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900"
+                title="Numbered List"
+              >
                 <ListOrdered size={15} />
               </button>
 
               <div className="h-4 w-px bg-gray-200 mx-1" />
 
               {/* Media */}
-              <button type="button" className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900" title="Insert Image">
+              <button
+                type="button"
+                onClick={() => {
+                  const url = prompt("Nhập URL hình ảnh:");
+                  if (url) {
+                    document.execCommand("insertImage", false, url);
+                  }                }}
+                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors hover:text-gray-900"
+                title="Insert Image"
+              >
                 <ImageIcon size={15} />
               </button>
               <button
@@ -734,13 +810,14 @@ export default function AdminPage() {
 
             </div>
 
-            {/* Editor Textarea */}
-            <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex flex-col min-h-[450px]">
-              <textarea
-                value={postContent}
-                onChange={(e) => setPostContent(e.target.value)}
-                placeholder="Bắt đầu nội dung bài viết..."
-                className="w-full flex-1 resize-none outline-none text-sm leading-relaxed text-gray-800 placeholder-gray-400 bg-transparent border-none"
+            {/* Editor ContentEditable Div */}
+            <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex flex-col min-h-[450px] overflow-y-auto">
+              <div
+                ref={editorRef}
+                contentEditable
+                suppressContentEditableWarning
+                onInput={(e) => setPostContent(e.currentTarget.innerHTML)}
+                className="w-full flex-1 outline-none text-sm leading-relaxed text-gray-800 bg-transparent border-none min-h-[400px]"
               />
             </div>
 
