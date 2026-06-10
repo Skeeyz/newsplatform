@@ -15,16 +15,18 @@ import type {
 } from "@/lib/types/news";
 
 const HOME_LIST_IDS = [
-  "oc-muon-hon-poster",
-  "vietnam-thailand-tiem-nang",
-  "cong-an-tphcm-bat-ma-tuy",
-  "oc-muon-hon-poster",
-  "oc-muon-hon-poster",
-  "oc-muon-hon-poster",
-  "oc-muon-hon-poster",
-  "anime-list-1",
-  "tech-list-1",
-  "movie-list-1",
+  "related-2",
+  "like-2",
+  "related-3",
+  "like-3",
+  "related-4",
+  "like-4",
+  "related-1",
+  "like-1",
+  "featured-1",
+  "featured-2",
+  "featured-3",
+  "featured-4",
 ];
 
 const RELATED_IDS = ["related-1", "related-2", "related-3", "related-4"];
