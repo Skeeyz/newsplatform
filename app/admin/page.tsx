@@ -1775,7 +1775,7 @@ export default function AdminPage() {
         <DialogContent className="max-w-[460px] w-[95%] rounded-[24px] p-6 border border-gray-100 shadow-2xl bg-white text-[#2c3e50] outline-none [&>button]:hidden">
           <DialogHeader className="border-b border-gray-150 pb-3 -mx-6 px-6">
             <DialogTitle className="text-xl font-bold text-gray-900 text-left">
-              {dialogMode === "add" ? "Thêm danh mục" : "Cập nhật danh mục"}
+              {dialogMode === "add" ? "Thêm danh mục" : "Sửa danh mục"}
             </DialogTitle>
           </DialogHeader>
 
@@ -1826,7 +1826,7 @@ export default function AdminPage() {
                 type="submit"
                 className="w-36 py-3 bg-[#e86b6b] hover:bg-[#e55956] text-white text-lg font-bold rounded-xl transition-all shadow-md flex items-center justify-center"
               >
-                {dialogMode === "add" ? "Thêm" : "Lưu"}
+                {dialogMode === "add" ? "Thêm" : "Sửa"}
               </button>
             </div>
           </form>
