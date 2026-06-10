@@ -642,7 +642,7 @@ export default function AdminPage() {
           name: categoryForm.name,
           postCount: 0,
           priority: Number(categoryForm.priority) || 0,
-          status: "Hoạt động"
+          status: categoryForm.status || "Hoạt động"
         };
         setCategories([...categories, newCategory]);
         toast.success("Thêm danh mục mới thành công!");
@@ -673,6 +673,7 @@ export default function AdminPage() {
         setAds(ads.map(a => (a.id === editId ? { ...a, ...adForm } as Ad : a)));
         toast.success("Cập nhật quảng cáo thành công!");
       }
+      setAdDialogOpen(false);
     }
     setDialogOpen(false);
   };
@@ -2380,6 +2381,23 @@ export default function AdminPage() {
               </div>
             </div>
 
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-gray-900">
+                Trạng thái
+              </label>
+              <div className="relative">
+                <select
+                  value={categoryForm.status || "Hoạt động"}
+                  onChange={(e) => setCategoryForm({ ...categoryForm, status: e.target.value as "Hoạt động" | "Ngừng hoạt động" })}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm font-semibold text-gray-800 appearance-none cursor-pointer"
+                >
+                  <option value="Hoạt động">Hoạt động</option>
+                  <option value="Ngừng hoạt động">Ngừng hoạt động</option>
+                </select>
+                <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              </div>
+            </div>
+
             <div className="flex items-center justify-center gap-6 pt-6 pb-2">
               <button
                 type="button"
@@ -2467,6 +2485,23 @@ export default function AdminPage() {
                   className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm font-medium outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm"
                   required
                 />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-gray-900">
+                Trạng thái
+              </label>
+              <div className="relative">
+                <select
+                  value={adForm.status || "Hoạt động"}
+                  onChange={(e) => setAdForm({ ...adForm, status: e.target.value as "Hoạt động" | "Ngừng hoạt động" })}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm font-semibold text-gray-800 appearance-none cursor-pointer"
+                >
+                  <option value="Hoạt động">Hoạt động</option>
+                  <option value="Ngừng hoạt động">Ngừng hoạt động</option>
+                </select>
+                <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
               </div>
             </div>
 
