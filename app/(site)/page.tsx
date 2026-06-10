@@ -5,8 +5,8 @@ import { Clock } from "lucide-react";
 export default async function HomePage() {
   const { featuredArticle, latestArticles } = await getHomeFeed();
 
-  // Slice to exactly 12 articles just in case
-  const articlesToDisplay = latestArticles.slice(0, 12);
+  // Slice to exactly 6 articles just in case
+  const articlesToDisplay = latestArticles.slice(0, 6);
 
   // Helper to chunk articles into groups of 3
   const articleGroups = [];
@@ -105,7 +105,7 @@ export default async function HomePage() {
               </div>
 
               {/* Advertisement Banner (QC 650x300) between groups */}
-              {groupIndex < 3 && (
+              {groupIndex < articleGroups.length - 1 && (
                 <div className="relative w-full aspect-[650/300] overflow-hidden rounded-sm border border-gray-200 bg-gray-50 flex justify-center group shadow-sm">
                   <a href="#" className="block w-full h-full">
                     <img
