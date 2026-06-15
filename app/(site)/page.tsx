@@ -16,6 +16,20 @@ export default async function HomePage() {
 
   return (
     <main className="w-full px-3 md:px-0 py-4 font-sans text-xs flex flex-col gap-6">
+      {/* Top Banner Advertisement (QC 970x250) */}
+      <div className="relative w-full md:w-[970px] md:h-[250px] overflow-hidden rounded border border-gray-200 bg-gray-50 group shadow-sm mx-auto">
+        <a href="#" className="block w-full h-full">
+          <img
+            src="/qc_970_250.svg"
+            alt="Quảng cáo 970x250"
+            className="w-full h-full object-cover"
+          />
+        </a>
+        <div className="absolute top-1 right-1 bg-black/40 hover:bg-black/70 text-white/90 text-[9px] px-1.5 py-0.5 cursor-pointer rounded select-none z-10 transition-colors">
+          Quảng cáo &times;
+        </div>
+      </div>
+
       {/* Main Two-Column Layout */}
       <div className="flex flex-col lg:flex-row gap-5 items-start w-full">
         {/* Left Column: Featured Article, Header & List with 650x300 Ads */}
