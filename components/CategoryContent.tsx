@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Clock } from "lucide-react";
 import type { Article } from "@/lib/types/news";
+import { formatCategory } from "@/lib/utils";
 
 interface CategoryContentProps {
   category: string;
@@ -104,14 +105,14 @@ export function CategoryContent({ category, label, featured, initialList }: Cate
                   <h3 className="text-gray-800 font-bold text-xs sm:text-[13px] leading-snug group-hover:text-[#df3232] transition-colors line-clamp-2 sm:line-clamp-3">
                     {item.title}
                   </h3>
-                  <div className="flex items-center gap-1.5 text-gray-400 font-semibold text-[10px] uppercase mt-1">
-                    <span className="text-[#df3232] font-bold">{item.category}</span>
+                  <div className="flex items-center gap-1.5 text-gray-400 font-semibold text-[10px] mt-1">
+                    <span className="text-[#df3232] font-bold">{formatCategory(item.category)}</span>
                     <span className="text-gray-200 font-normal">|</span>
                     <span>{item.time.split(" ")[0]}</span>
                     {item.time.includes(" ") && (
                       <>
                         <Clock size={11} className="text-gray-400 flex-shrink-0 -mt-0.5" />
-                        <span className="font-normal lowercase">{item.time.split(" ")[1]}</span>
+                        <span className="font-normal">{item.time.split(" ")[1]}</span>
                       </>
                     )}
                   </div>
@@ -153,14 +154,14 @@ export function CategoryContent({ category, label, featured, initialList }: Cate
                   <h3 className="text-gray-800 font-bold text-xs sm:text-[13px] leading-snug group-hover:text-[#df3232] transition-colors line-clamp-2 sm:line-clamp-3">
                     {item.title}
                   </h3>
-                  <div className="flex items-center gap-1.5 text-gray-400 font-semibold text-[10px] uppercase mt-1">
-                    <span className="text-[#df3232] font-bold">{item.category}</span>
+                  <div className="flex items-center gap-1.5 text-gray-400 font-semibold text-[10px] mt-1">
+                    <span className="text-[#df3232] font-bold">{formatCategory(item.category)}</span>
                     <span className="text-gray-200 font-normal">|</span>
                     <span>{item.time.split(" ")[0]}</span>
                     {item.time.includes(" ") && (
                       <>
                         <Clock size={11} className="text-gray-400 flex-shrink-0 -mt-0.5" />
-                        <span className="font-normal lowercase">{item.time.split(" ")[1]}</span>
+                        <span className="font-normal">{item.time.split(" ")[1]}</span>
                       </>
                     )}
                   </div>

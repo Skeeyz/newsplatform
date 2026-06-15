@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getCategorySlug, getHomeFeed } from "@/lib/api/news";
 import { Clock } from "lucide-react";
+import { formatCategory } from "@/lib/utils";
 
 export default async function HomePage() {
   const { featuredArticle, latestArticles } = await getHomeFeed();
@@ -103,9 +104,9 @@ export default async function HomePage() {
                         <div className="flex items-center gap-2 mt-2 text-[10px] sm:text-[11px] text-gray-500 font-sans font-medium">
                           <Link
                             href={`/${categorySlug}`}
-                            className="text-gray-750 hover:text-[#e24a48] font-semibold text-[10px] sm:text-[11px] tracking-wide transition-colors duration-150 hover:underline"
+                            className="text-[#df3232] hover:text-[#df3232]/80 font-bold text-[10px] sm:text-[11px] tracking-wide transition-colors duration-150 hover:underline"
                           >
-                            {article.category}
+                            {formatCategory(article.category)}
                           </Link>
                           <span className="text-gray-300">&#8226;</span>
                           <span>{article.time.split(" ")[0]}</span>

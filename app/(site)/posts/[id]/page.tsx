@@ -6,6 +6,7 @@ import {
   getPostRecommendations,
 } from "@/lib/api/news";
 import { Clock, Link2, Star } from "lucide-react";
+import { formatCategory } from "@/lib/utils";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -46,9 +47,9 @@ export default async function PostDetailPage({ params }: PageProps) {
             <div className="flex items-center gap-1.5 text-gray-500 font-semibold mb-2">
               <Link
                 href={`/${getCategorySlug(article.category)}`}
-                className="text-brand-red font-bold uppercase tracking-wide text-[11px] hover:underline"
+                className="text-[#df3232] font-bold text-[11px] hover:underline"
               >
-                {article.category}
+                {formatCategory(article.category)}
               </Link>
               <span className="text-gray-300">&#8226;</span>
               <span className="text-[11px]">{article.time.split(" ")[0]}</span>
@@ -162,9 +163,9 @@ export default async function PostDetailPage({ params }: PageProps) {
                         <div className="flex items-center gap-1 text-[9px] sm:text-[10px] text-gray-500 font-semibold">
                           <Link
                             href={`/${catSlug}`}
-                            className="text-[#e24a48] font-bold uppercase hover:underline"
+                            className="text-[#df3232] font-bold hover:underline"
                           >
-                            {item.category}
+                            {formatCategory(item.category)}
                           </Link>
                           <span className="text-gray-300">&#8226;</span>
                           <span className="text-gray-400 font-normal">{item.time.split(" ")[0]}</span>
@@ -213,9 +214,9 @@ export default async function PostDetailPage({ params }: PageProps) {
                         <div className="flex items-center gap-1 text-[9px] sm:text-[10px] text-gray-500 font-semibold">
                           <Link
                             href={`/${catSlug}`}
-                            className="text-[#e24a48] font-bold uppercase hover:underline"
+                            className="text-[#df3232] font-bold hover:underline"
                           >
-                            {item.category}
+                            {formatCategory(item.category)}
                           </Link>
                           <span className="text-gray-300">&#8226;</span>
                           <span className="text-gray-400 font-normal">{item.time.split(" ")[0]}</span>
