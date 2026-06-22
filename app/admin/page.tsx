@@ -37,7 +37,13 @@ import {
   MousePointerClick,
   Lock,
   EyeOff,
-  LogOut
+  LogOut,
+  Layout,
+  Film,
+  Copy,
+  ExternalLink,
+  Link2,
+  Globe
 } from "lucide-react";
 import { Toaster, toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
@@ -48,6 +54,7 @@ import {
   DialogTitle,
   DialogFooter
 } from "@/components/ui/dialog";
+import { mockSiteSettings } from "@/lib/mockSiteSettings";
 
 // ==========================================
 // TYPES
@@ -82,7 +89,7 @@ interface Ad {
   image?: string;
 }
 
-type TabType = "dashboard" | "posts" | "categories" | "ads";
+type TabType = "dashboard" | "posts" | "categories" | "ads" | "logo-footer" | "media";
 
 export default function AdminPage() {
   // ==========================================
@@ -128,6 +135,134 @@ export default function AdminPage() {
   };
 
   const [activeTab, setActiveTab] = useState<TabType>("dashboard");
+
+  // ==========================================
+  // LOGO & FOOTER + MEDIA MANAGER STATES
+  // ==========================================
+  interface MediaItem {
+    id: number;
+    title: string;
+    type: "image" | "video";
+    url: string;
+    size: string;
+    dimensions?: string;
+    duration?: string;
+    createdAt: string;
+  }
+
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([
+    {
+      id: 1,
+      title: "Nvidia RTX 5090 Leak Cover",
+      type: "image",
+      url: "/tech_2026_cover.png",
+      size: "763 KB",
+      dimensions: "1280x720",
+      createdAt: "2026-05-24"
+    },
+    {
+      id: 2,
+      title: "Apple Vision Pro Space",
+      type: "image",
+      url: "/tech_2026_vision.png",
+      size: "421 KB",
+      dimensions: "1280x800",
+      createdAt: "2026-05-27"
+    },
+    {
+      id: 3,
+      title: "AI robot in warehouse",
+      type: "image",
+      url: "/tech_2026_warehouse.png",
+      size: "891 KB",
+      dimensions: "1024x768",
+      createdAt: "2026-05-24"
+    },
+    {
+      id: 4,
+      title: "Huawei Autonomous Electric Car",
+      type: "image",
+      url: "/tech_2026_car.png",
+      size: "735 KB",
+      dimensions: "1920x1080",
+      createdAt: "2026-05-24"
+    },
+    {
+      id: 5,
+      title: "eSports News Feature",
+      type: "image",
+      url: "/esports_news.png",
+      size: "1.05 MB",
+      dimensions: "1600x900",
+      createdAt: "2026-05-28"
+    },
+    {
+      id: 6,
+      title: "GTA 6 Beta Gameplay Preview",
+      type: "image",
+      url: "/gta6_beta.png",
+      size: "915 KB",
+      dimensions: "1920x1080",
+      createdAt: "2026-05-29"
+    },
+    {
+      id: 7,
+      title: "Ốc Mượn Hồn Poster",
+      type: "image",
+      url: "/oc_muon_hon_poster.png",
+      size: "757 KB",
+      dimensions: "1080x1920",
+      createdAt: "2026-05-27"
+    },
+    {
+      id: 8,
+      title: "Soulslike Game Announcement",
+      type: "image",
+      url: "/soulslike_game.png",
+      size: "854 KB",
+      dimensions: "1920x1080",
+      createdAt: "2026-05-25"
+    },
+    {
+      id: 9,
+      title: "Intro Video 2026",
+      type: "video",
+      url: "https://www.w3schools.com/html/mov_bbb.mp4",
+      size: "12.4 MB",
+      duration: "00:10",
+      createdAt: "2026-06-01"
+    }
+  ]);
+
+  const [siteSettings, setSiteSettings] = useState(mockSiteSettings);
+  const [logoFooterActiveTab, setLogoFooterActiveTab] = useState<"general" | "footer" | "social" | "columns">("general");
+
+  // Simplified Logo & Footer states matching screenshot
+  const [logoWebsiteName, setLogoWebsiteName] = useState("Tên Web");
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [footerOperator, setFooterOperator] = useState("Công ty TNHH PHD STUDIO");
+  const [footerAddress, setFooterAddress] = useState("246 Lê Đình Cẩn, phường Tân Tạo, quận Bình Tân, Thành phố Hồ Chí Minh");
+  const [footerResponsible, setFooterResponsible] = useState("Ông Phạm Hải Đăng");
+  const [footerPhone, setFooterPhone] = useState("0327906965");
+  const [footerEmail, setFooterEmail] = useState("congtyphdstudio@gmail.com");
+  const [footerLicense, setFooterLicense] = useState("Số bao nhiêu ....");
+
+  const [mediaDialogOpen, setMediaDialogOpen] = useState(false);
+  const [mediaDialogMode, setMediaDialogMode] = useState<"add" | "edit">("add");
+  const [mediaEditId, setMediaEditId] = useState<number | null>(null);
+  const [mediaForm, setMediaForm] = useState<Partial<MediaItem>>({
+    title: "",
+    type: "image",
+    url: "",
+    size: "100 KB",
+    dimensions: "1280x720",
+    duration: ""
+  });
+
+  const [mediaPreviewItem, setMediaPreviewItem] = useState<MediaItem | null>(null);
+  const [mediaSearchQuery, setMediaSearchQuery] = useState("");
+  const [mediaTypeFilter, setMediaTypeFilter] = useState<"all" | "image" | "video">("all");
+
   const [timeFilter, setTimeFilter] = useState<"today" | "week" | "month" | "year">("month");
   const [dashboardDay, setDashboardDay] = useState("");
   const [dashboardMonth, setDashboardMonth] = useState("");
@@ -1335,7 +1470,7 @@ export default function AdminPage() {
           {/* Logo Brand Header */}
           <div className="flex items-center gap-3.5 mb-10 mt-2">
             <div className="w-[50px] h-[50px] bg-[#d9d9d9] rounded-full flex-shrink-0 border-2 border-white/25 shadow-sm" />
-            <span className="font-extrabold text-[22px] tracking-tight drop-shadow-sm">Logo</span>
+            <span className="font-extrabold text-[22px] tracking-tight drop-shadow-sm">{siteSettings.header.logoText || "Logo"}</span>
             <button
               onClick={() => setSidebarOpen(false)}
               className="ml-auto lg:hidden text-white hover:text-red-100 p-1"
@@ -1390,8 +1525,41 @@ export default function AdminPage() {
                   : "text-white/80 hover:text-white hover:bg-white/10"
               }`}
             >
-              <ImageIcon size={18} className="flex-shrink-0" />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0">
+                <rect width="18" height="18" x="3" y="3" rx="2" />
+                <path d="M7 16V8h2a3 3 0 0 1 0 6H7" />
+                <path d="M14 16v-6a2 2 0 0 1 4 0v6" />
+                <path d="M14 13h4" />
+              </svg>
               <span>Quản lý AD</span>
+            </button>
+
+            <button
+              onClick={() => handleTabChange("logo-footer")}
+              className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 group ${
+                activeTab === "logo-footer"
+                  ? "bg-[#cb4643] text-white shadow-md border-l-4 border-white"
+                  : "text-white/80 hover:text-white hover:bg-white/10"
+              }`}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0">
+                <rect width="18" height="18" x="3" y="3" rx="2" />
+                <path d="M3 9h18" />
+                <path d="M3 15h18" />
+              </svg>
+              <span>Logo & Footer</span>
+            </button>
+
+            <button
+              onClick={() => handleTabChange("media")}
+              className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 group ${
+                activeTab === "media"
+                  ? "bg-[#cb4643] text-white shadow-md border-l-4 border-white"
+                  : "text-white/80 hover:text-white hover:bg-white/10"
+              }`}
+            >
+              <ImageIcon size={18} className="flex-shrink-0" />
+              <span>Quản lý Media</span>
             </button>
           </nav>
         </div>
@@ -1423,6 +1591,8 @@ export default function AdminPage() {
                 {activeTab === "posts" && "Quản lý bài viết"}
                 {activeTab === "categories" && "Quản lý danh mục"}
                 {activeTab === "ads" && "Quản lý AD"}
+                {activeTab === "logo-footer" && "Logo & Footer"}
+                {activeTab === "media" && "Quản lý Media"}
               </span>
             </h1>
           </div>
@@ -1791,6 +1961,375 @@ export default function AdminPage() {
 
               </div>
             </>
+          ) : activeTab === "logo-footer" ? (
+            <div className="space-y-6">
+              {/* CARD 1: Header action */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-150 shadow-sm">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Quản lý Footer & Nhận diện
+                  </h2>
+                  <p className="text-xs text-gray-500 mt-1 font-medium">
+                    Chỉnh sửa thông tin hiển thị cuối trang và logo website
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    toast.loading("Đang lưu cấu hình...", { id: "save-logo-footer" });
+                    setTimeout(() => {
+                      toast.success("Lưu thay đổi thành công!", { id: "save-logo-footer" });
+                    }, 800);
+                  }}
+                  className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#E55956] hover:bg-[#cb4643] active:scale-[0.98] text-white text-sm font-bold rounded-xl shadow-md transition-all self-start sm:self-center"
+                >
+                  <Download size={16} />
+                  <span>Lưu thay đổi</span>
+                </button>
+              </div>
+
+              {/* CARD 2: Logo Website */}
+              <div className="bg-white p-6 rounded-2xl border border-gray-150 shadow-sm space-y-4">
+                <h3 className="text-lg font-bold text-gray-900">
+                  Logo website
+                </h3>
+
+                <div className="flex items-start gap-6">
+                  {/* Dashed Upload Box */}
+                  <div className="flex flex-col items-center">
+                    <label
+                      htmlFor="logo-upload-input"
+                      className="w-[90px] h-[90px] border-2 border-dashed border-gray-200 hover:border-[#E55956] rounded-xl flex items-center justify-center bg-gray-50/50 cursor-pointer overflow-hidden transition-all group relative"
+                    >
+                      {logoUrl ? (
+                        <img
+                          src={logoUrl}
+                          alt="Logo Preview"
+                          className="w-full h-full object-contain"
+                        />
+                      ) : (
+                        <div className="flex flex-col items-center justify-center text-gray-400 group-hover:text-[#E55956] transition-colors">
+                          <Upload size={20} />
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-bold">
+                        Đổi ảnh
+                      </div>
+                    </label>
+                    <input
+                      type="file"
+                      id="logo-upload-input"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = () => {
+                            setLogoUrl(reader.result as string);
+                            toast.success("Đã chọn ảnh logo mới!");
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      className="hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => document.getElementById("logo-upload-input")?.click()}
+                      className="text-[#E55956] hover:text-[#cb4643] text-xs font-bold transition-colors mt-2 cursor-pointer"
+                    >
+                      Đổi logo
+                    </button>
+                  </div>
+
+                  {/* Logo name input */}
+                  <div className="flex-1 space-y-1.5">
+                    <label className="block text-sm font-bold text-gray-600">
+                      Tên website
+                    </label>
+                    <input
+                      type="text"
+                      value={logoWebsiteName}
+                      onChange={(e) => setLogoWebsiteName(e.target.value)}
+                      placeholder="Nhập tên website..."
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white font-medium text-gray-800"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* CARD 3: Thông tin Footer */}
+              <div className="bg-white p-6 rounded-2xl border border-gray-150 shadow-sm space-y-5">
+                <h3 className="text-lg font-bold text-gray-900">
+                  Thông tin Footer
+                </h3>
+
+                <div className="space-y-4">
+                  {/* Don vi van hanh */}
+                  <div className="space-y-1.5">
+                    <label className="block text-sm font-bold text-gray-600">
+                      Đơn vị vận hành
+                    </label>
+                    <input
+                      type="text"
+                      value={footerOperator}
+                      onChange={(e) => setFooterOperator(e.target.value)}
+                      placeholder="Nhập đơn vị vận hành..."
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white font-medium text-gray-800"
+                    />
+                  </div>
+
+                  {/* Dia chi */}
+                  <div className="space-y-1.5">
+                    <label className="block text-sm font-bold text-gray-600">
+                      Địa chỉ
+                    </label>
+                    <input
+                      type="text"
+                      value={footerAddress}
+                      onChange={(e) => setFooterAddress(e.target.value)}
+                      placeholder="Nhập địa chỉ..."
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white font-medium text-gray-800"
+                    />
+                  </div>
+
+                  {/* Nguoi chiu trach nhiem */}
+                  <div className="space-y-1.5">
+                    <label className="block text-sm font-bold text-gray-600">
+                      Người chịu trách nhiệm nội dung
+                    </label>
+                    <input
+                      type="text"
+                      value={footerResponsible}
+                      onChange={(e) => setFooterResponsible(e.target.value)}
+                      placeholder="Nhập người chịu trách nhiệm..."
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white font-medium text-gray-800"
+                    />
+                  </div>
+
+                  {/* So dien thoai */}
+                  <div className="space-y-1.5">
+                    <label className="block text-sm font-bold text-gray-600">
+                      Số điện thoại
+                    </label>
+                    <input
+                      type="text"
+                      value={footerPhone}
+                      onChange={(e) => setFooterPhone(e.target.value)}
+                      placeholder="Nhập số điện thoại..."
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white font-medium text-gray-800"
+                    />
+                  </div>
+
+                  {/* Email */}
+                  <div className="space-y-1.5">
+                    <label className="block text-sm font-bold text-gray-600">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      value={footerEmail}
+                      onChange={(e) => setFooterEmail(e.target.value)}
+                      placeholder="Nhập địa chỉ email..."
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white font-medium text-gray-800"
+                    />
+                  </div>
+
+                  {/* Giay phep */}
+                  <div className="space-y-1.5">
+                    <label className="block text-sm font-bold text-gray-600">
+                      Giấy phép thiết lập trang TTDT
+                    </label>
+                    <input
+                      type="text"
+                      value={footerLicense}
+                      onChange={(e) => setFooterLicense(e.target.value)}
+                      placeholder="Nhập số giấy phép..."
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white font-medium text-gray-800"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : activeTab === "media" ? (
+            <div className="bg-white p-6 rounded-2xl border border-gray-150 shadow-sm space-y-6">
+              {/* Search and Filters Bar */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                {/* Filter by Types */}
+                <div className="flex flex-wrap gap-1.5 p-1 bg-gray-50 border border-gray-100 rounded-xl w-fit flex-shrink-0">
+                  {[
+                    { id: "all", label: "Tất cả" },
+                    { id: "image", label: "Hình ảnh" },
+                    { id: "video", label: "Videos" }
+                  ].map((type) => (
+                    <button
+                      key={type.id}
+                      type="button"
+                      onClick={() => setMediaTypeFilter(type.id as any)}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                        mediaTypeFilter === type.id
+                          ? "bg-[#E55956] text-white shadow-sm"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      }`}
+                    >
+                      {type.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Search and Upload */}
+                <div className="flex items-center gap-3 w-full md:w-auto">
+                  <div className="relative flex-1 md:w-64">
+                    <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      value={mediaSearchQuery}
+                      onChange={(e) => setMediaSearchQuery(e.target.value)}
+                      placeholder="Tìm theo tên file, URL..."
+                      className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-xs outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-gray-50/40 font-medium text-gray-700"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMediaDialogMode("add");
+                      setMediaEditId(null);
+                      setMediaForm({
+                        title: "",
+                        type: "image",
+                        url: "",
+                        size: "150 KB",
+                        dimensions: "1280x720",
+                        duration: ""
+                      });
+                      setMediaDialogOpen(true);
+                    }}
+                    className="flex items-center gap-1.5 px-4.5 py-2.5 bg-[#E55956] hover:bg-[#cb4643] text-white text-xs font-bold rounded-xl shadow-md transition-all flex-shrink-0"
+                  >
+                    <Plus size={14} />
+                    <span>Thêm Media</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Media Cards Grid */}
+              {(() => {
+                const filteredMedia = mediaItems.filter((item) => {
+                  const matchesSearch = item.title.toLowerCase().includes(mediaSearchQuery.toLowerCase()) ||
+                    item.url.toLowerCase().includes(mediaSearchQuery.toLowerCase());
+                  const matchesType = mediaTypeFilter === "all" || item.type === mediaTypeFilter;
+                  return matchesSearch && matchesType;
+                });
+
+                return filteredMedia.length > 0 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+                    {filteredMedia.map((item) => (
+                      <div
+                        key={item.id}
+                        className="group border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between"
+                      >
+                        {/* Preview Screen */}
+                        <div className="relative aspect-video w-full bg-gray-100 overflow-hidden flex items-center justify-center border-b border-gray-150">
+                          {item.type === "video" ? (
+                            <div className="w-full h-full relative flex items-center justify-center bg-slate-950">
+                              <Video className="w-8 h-8 text-white/50 group-hover:scale-110 transition-transform z-10" />
+                              <span className="absolute bottom-2 right-2 text-[9px] bg-black/60 px-1.5 py-0.5 rounded text-white font-mono font-bold z-10">
+                                {item.duration || "00:00"}
+                              </span>
+                            </div>
+                          ) : (
+                            <img
+                              src={item.url}
+                              alt={item.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
+                            />
+                          )}
+
+                          {/* Glassmorphic Hover Action Overlay */}
+                          <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2.5 z-20">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard.writeText(window.location.origin + item.url);
+                                toast.success("Đã sao chép link media vào bộ nhớ tạm!");
+                              }}
+                              className="w-8.5 h-8.5 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-md border border-white/20 transition-all active:scale-95"
+                              title="Sao chép đường dẫn"
+                            >
+                              <Copy size={14} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setMediaPreviewItem(item)}
+                              className="w-8.5 h-8.5 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-md border border-white/20 transition-all active:scale-95"
+                              title="Xem trước"
+                            >
+                              <Eye size={14} />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Info Panel */}
+                        <div className="p-3 space-y-1.5 flex-1 flex flex-col justify-between">
+                          <div className="min-w-0">
+                            <h5 className="text-[11px] font-bold text-gray-800 truncate leading-snug" title={item.title}>
+                              {item.title}
+                            </h5>
+                            <p className="text-[9px] text-gray-400 truncate font-mono select-all" title={item.url}>
+                              {item.url}
+                            </p>
+                          </div>
+
+                          <div className="flex items-center justify-between pt-2 border-t border-gray-50 flex-shrink-0">
+                            <div className="flex flex-col gap-0.5">
+                              <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">{item.size}</span>
+                              {item.dimensions && (
+                                <span className="text-[8px] font-semibold text-gray-400 font-mono leading-none">{item.dimensions}</span>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setMediaDialogMode("edit");
+                                  setMediaEditId(item.id);
+                                  setMediaForm(item);
+                                  setMediaDialogOpen(true);
+                                }}
+                                className="p-1 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded transition-colors"
+                                title="Chỉnh sửa thông tin"
+                              >
+                                <SquarePen size={12} />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (confirm("Bạn có chắc chắn muốn xóa file media này không?")) {
+                                    setMediaItems(mediaItems.filter((m) => m.id !== item.id));
+                                    toast.success("Đã xóa file media thành công!");
+                                  }
+                                }}
+                                className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                                title="Xóa media"
+                              >
+                                <Trash2 size={12} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="py-20 text-center text-gray-400 font-bold">
+                    Không tìm thấy file media nào tương ứng.
+                  </div>
+                );
+              })()}
+            </div>
           ) : (
             <>
               {/* HEADER ACTION BANNER */}
@@ -2611,7 +3150,224 @@ export default function AdminPage() {
         </DialogContent>
       </Dialog>
 
+      {/* ==========================================
+          MODAL: ADD / EDIT MEDIA DIALOG
+          ========================================== */}
+      <Dialog open={mediaDialogOpen} onOpenChange={setMediaDialogOpen}>
+        <DialogContent className="max-w-[460px] w-[95%] rounded-[24px] p-6 border border-gray-100 shadow-2xl bg-white text-[#2c3e50] outline-none [&>button]:hidden">
+          <DialogHeader className="border-b border-gray-150 pb-3 -mx-6 px-6">
+            <DialogTitle className="text-xl font-bold text-gray-900 text-left">
+              {mediaDialogMode === "add" ? "Thêm file Media" : "Sửa file Media"}
+            </DialogTitle>
+          </DialogHeader>
 
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!mediaForm.title?.trim() || !mediaForm.url?.trim()) {
+                toast.error("Vui lòng điền đầy đủ tiêu đề và URL!");
+                return;
+              }
+
+              if (mediaDialogMode === "add") {
+                const newItem: MediaItem = {
+                  id: mediaItems.length > 0 ? Math.max(...mediaItems.map(m => m.id)) + 1 : 1,
+                  title: mediaForm.title,
+                  type: mediaForm.type || "image",
+                  url: mediaForm.url,
+                  size: mediaForm.size || "150 KB",
+                  dimensions: mediaForm.type === "image" ? (mediaForm.dimensions || "1280x720") : undefined,
+                  duration: mediaForm.type === "video" ? (mediaForm.duration || "01:00") : undefined,
+                  createdAt: new Date().toISOString().split("T")[0]
+                };
+                setMediaItems([newItem, ...mediaItems]);
+                toast.success("Thêm file media mới thành công!");
+              } else {
+                setMediaItems(
+                  mediaItems.map((m) =>
+                    m.id === mediaEditId
+                      ? ({ ...m, ...mediaForm } as MediaItem)
+                      : m
+                  )
+                );
+                toast.success("Cập nhật thông tin file media thành công!");
+              }
+              setMediaDialogOpen(false);
+            }}
+            className="space-y-4 pt-4"
+          >
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                Tiêu đề Media
+              </label>
+              <input
+                type="text"
+                value={mediaForm.title || ""}
+                onChange={(e) => setMediaForm({ ...mediaForm, title: e.target.value })}
+                placeholder="Nhập tiêu đề..."
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm font-medium"
+                required
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                Loại định dạng
+              </label>
+              <div className="relative">
+                <select
+                  value={mediaForm.type || "image"}
+                  onChange={(e) => setMediaForm({ ...mediaForm, type: e.target.value as "image" | "video" })}
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm font-semibold text-gray-800 appearance-none cursor-pointer"
+                >
+                  <option value="image">Hình ảnh (Image)</option>
+                  <option value="video">Phim / Video</option>
+                </select>
+                <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                Đường dẫn URL
+              </label>
+              <input
+                type="text"
+                value={mediaForm.url || ""}
+                onChange={(e) => setMediaForm({ ...mediaForm, url: e.target.value })}
+                placeholder="Ví dụ: /soulslike_game.png hoặc URL ngoài..."
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm font-mono"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                  Kích thước (Size)
+                </label>
+                <input
+                  type="text"
+                  value={mediaForm.size || ""}
+                  onChange={(e) => setMediaForm({ ...mediaForm, size: e.target.value })}
+                  placeholder="Ví dụ: 350 KB, 12 MB..."
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm font-medium"
+                />
+              </div>
+
+              {mediaForm.type === "video" ? (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                    Thời lượng (Duration)
+                  </label>
+                  <input
+                    type="text"
+                    value={mediaForm.duration || ""}
+                    onChange={(e) => setMediaForm({ ...mediaForm, duration: e.target.value })}
+                    placeholder="Ví dụ: 01:24..."
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm font-mono"
+                  />
+                </div>
+              ) : (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                    Độ phân giải (Resolution)
+                  </label>
+                  <input
+                    type="text"
+                    value={mediaForm.dimensions || ""}
+                    onChange={(e) => setMediaForm({ ...mediaForm, dimensions: e.target.value })}
+                    placeholder="Ví dụ: 1920x1080..."
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm font-mono"
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-center gap-6 pt-6 pb-2">
+              <button
+                type="button"
+                onClick={() => setMediaDialogOpen(false)}
+                className="w-36 py-2.5 border border-gray-200 hover:bg-gray-50 text-gray-900 text-sm font-bold rounded-xl transition-all shadow-sm flex items-center justify-center"
+              >
+                Hủy
+              </button>
+              <button
+                type="submit"
+                className="w-36 py-2.5 bg-[#e86b6b] hover:bg-[#e55956] text-white text-sm font-bold rounded-xl transition-all shadow-md flex items-center justify-center"
+              >
+                {mediaDialogMode === "add" ? "Thêm mới" : "Lưu sửa"}
+              </button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* ==========================================
+          MODAL: MEDIA PREVIEW DIALOG
+          ========================================== */}
+      <Dialog open={mediaPreviewItem !== null} onOpenChange={(open) => {
+        if (!open) setMediaPreviewItem(null);
+      }}>
+        <DialogContent className="max-w-[800px] w-[95%] rounded-[24px] p-5 border border-gray-100 shadow-2xl bg-slate-950 text-white outline-none flex flex-col gap-4 [&>button]:text-white">
+          <DialogHeader className="border-b border-white/10 pb-3">
+            <DialogTitle className="text-base font-bold text-white truncate text-left pr-8">
+              Preview: {mediaPreviewItem?.title}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="w-full aspect-video rounded-xl overflow-hidden bg-black flex items-center justify-center border border-white/5 shadow-inner">
+            {mediaPreviewItem?.type === "video" ? (
+              <video
+                src={mediaPreviewItem.url}
+                controls
+                autoPlay
+                className="w-full max-h-[450px] object-contain"
+              />
+            ) : (
+              mediaPreviewItem && (
+                <img
+                  src={mediaPreviewItem.url}
+                  alt={mediaPreviewItem.title}
+                  className="w-full h-full object-contain"
+                />
+              )
+            )}
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs font-semibold text-gray-400 gap-3 border-t border-white/5 pt-3">
+            <div className="space-y-1">
+              <p>
+                Đường dẫn: <span className="font-mono text-white select-all">{mediaPreviewItem?.url}</span>
+              </p>
+              <div className="flex gap-4">
+                <span>Dung lượng: <strong className="text-white">{mediaPreviewItem?.size}</strong></span>
+                {mediaPreviewItem?.dimensions && (
+                  <span>Độ phân giải: <strong className="text-white font-mono">{mediaPreviewItem.dimensions}</strong></span>
+                )}
+                {mediaPreviewItem?.duration && (
+                  <span>Thời lượng: <strong className="text-white font-mono">{mediaPreviewItem.duration}</strong></span>
+                )}
+                <span>Ngày tạo: <strong className="text-white">{mediaPreviewItem?.createdAt}</strong></span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                if (mediaPreviewItem) {
+                  navigator.clipboard.writeText(window.location.origin + mediaPreviewItem.url);
+                  toast.success("Đã sao chép link media vào bộ nhớ tạm!");
+                }
+              }}
+              className="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/10 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 self-start sm:self-center"
+            >
+              <Copy size={13} />
+              <span>Copy Link</span>
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
     </div>
   );
