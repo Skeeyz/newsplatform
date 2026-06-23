@@ -194,6 +194,11 @@ export function Header({ settings }: HeaderProps) {
             );
           })}
         </nav>
+
+        {/* Hamburger menu icon in the right corner (not clickable yet) */}
+        <div className="h-full w-[48px] flex items-center justify-center border-l border-[#2d2d2d] text-white flex-shrink-0 cursor-default">
+          <Menu className="h-[18px] w-[18px]" />
+        </div>
       </div>
 
       {/* Mobile Fullscreen Menu Drawer (md:hidden) */}
