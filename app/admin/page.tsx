@@ -1485,7 +1485,7 @@ export default function AdminPage() {
             setVideoUrl("");
           }
         }}>
-          <DialogContent className="max-w-[480px] w-[95%] rounded-3xl p-7 border-none shadow-2xl bg-white text-[#2c3e50] outline-none overflow-hidden">
+          <DialogContent className="max-w-[480px] w-[95%] max-h-[90vh] overflow-y-auto rounded-3xl p-7 border-none shadow-2xl bg-white text-[#2c3e50] outline-none">
             <DialogHeader className="flex flex-row items-center gap-2 border-b border-gray-100 pb-4 pr-6">
               <div className="w-8 h-8 rounded-lg bg-[#E55956]/10 flex items-center justify-center flex-shrink-0">
                 <Video className="text-[#E55956] w-5 h-5" />
@@ -1552,7 +1552,7 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-3.5 pt-4 border-t border-gray-100 mt-2">
+            <div className="flex items-center justify-center gap-4 pt-4 border-t border-gray-100 mt-2">
               <button
                 type="button"
                 onClick={() => {
@@ -1561,14 +1561,14 @@ export default function AdminPage() {
                   setVideoFileName("");
                   setVideoUrl("");
                 }}
-                className="flex-1 py-3 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-gray-700 text-sm font-bold rounded-xl transition-all active:scale-[0.98]"
+                className="flex-1 max-w-[144px] py-3 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-gray-700 text-sm font-bold rounded-xl transition-all active:scale-[0.98] flex items-center justify-center"
               >
                 Hủy
               </button>
               <button
                 type="button"
                 onClick={handleInsertVideo}
-                className="flex-1 py-3 bg-[#E55956] hover:bg-[#cb4643] text-white text-sm font-bold rounded-xl transition-all shadow-md active:scale-[0.98]"
+                className="flex-1 max-w-[144px] py-3 bg-[#E55956] hover:bg-[#cb4643] text-white text-sm font-bold rounded-xl transition-all shadow-md active:scale-[0.98] flex items-center justify-center"
               >
                 Chèn Video
               </button>
@@ -2134,9 +2134,9 @@ export default function AdminPage() {
                   Logo website
                 </h3>
 
-                <div className="flex items-start gap-6">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
                   {/* Dashed Upload Box */}
-                  <div className="flex flex-col items-center">
+                  <div className="flex flex-col items-center flex-shrink-0">
                     <label
                       htmlFor="logo-upload-input"
                       className="w-[90px] h-[90px] border-2 border-dashed border-gray-200 hover:border-[#E55956] rounded-xl flex items-center justify-center bg-gray-50/50 cursor-pointer overflow-hidden transition-all group relative"
@@ -2183,7 +2183,7 @@ export default function AdminPage() {
                   </div>
 
                   {/* Logo name input */}
-                  <div className="flex-1 space-y-1.5">
+                  <div className="w-full sm:flex-1 space-y-1.5">
                     <label className="block text-sm font-bold text-gray-600">
                       Tên website
                     </label>
@@ -2759,7 +2759,7 @@ export default function AdminPage() {
                   
                   {/* VIEW: POSTS TABLE */}
                   {activeTab === "posts" && (
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full min-w-[900px] text-left border-collapse">
                       <thead>
                         <tr className="border-b border-gray-200 bg-gray-50/75 text-gray-500 font-bold text-xs uppercase tracking-wider">
                           <th className="py-4 px-6 w-16 text-center">ID</th>
@@ -2830,7 +2830,7 @@ export default function AdminPage() {
 
                   {/* VIEW: CATEGORIES TABLE */}
                   {activeTab === "categories" && (
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full min-w-[800px] text-left border-collapse">
                       <thead>
                         <tr className="border-b border-gray-200 bg-gray-50/75 text-gray-500 font-bold text-xs uppercase tracking-wider">
                           <th className="py-4 px-6 w-16 text-center">ID</th>
@@ -2895,7 +2895,7 @@ export default function AdminPage() {
 
                   {/* VIEW: ADS TABLE */}
                   {activeTab === "ads" && (
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full min-w-[950px] text-left border-collapse">
                       <thead>
                         <tr className="border-b border-gray-200 bg-gray-50/75 text-gray-500 font-bold text-xs uppercase tracking-wider">
                           <th className="py-4 px-6 w-16 text-center">ID</th>
@@ -3099,7 +3099,7 @@ export default function AdminPage() {
           MODAL: ADD / EDIT DIALOG FORM
           ========================================== */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-md w-[95%] rounded-2xl p-6 border-none shadow-2xl bg-white text-[#2c3e50] outline-none">
+        <DialogContent className="max-w-md w-[95%] max-h-[90vh] overflow-y-auto rounded-2xl p-6 border-none shadow-2xl bg-white text-[#2c3e50] outline-none">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-gray-900 border-b border-gray-100 pb-3 flex items-center gap-2">
               <PlusCircle size={20} className="text-[#E55956]" />
@@ -3130,7 +3130,7 @@ export default function AdminPage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
                       Danh mục
@@ -3165,7 +3165,7 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
                       Lượt xem
@@ -3221,7 +3221,7 @@ export default function AdminPage() {
           MODAL: ADD / EDIT CATEGORY DIALOG FORM
           ========================================== */}
       <Dialog open={categoryDialogOpen} onOpenChange={setCategoryDialogOpen}>
-        <DialogContent className="max-w-[460px] w-[95%] rounded-[24px] p-6 border border-gray-100 shadow-2xl bg-white text-[#2c3e50] outline-none [&>button]:hidden">
+        <DialogContent className="max-w-[460px] w-[95%] max-h-[90vh] overflow-y-auto rounded-[24px] p-6 border border-gray-100 shadow-2xl bg-white text-[#2c3e50] outline-none [&>button]:hidden">
           <DialogHeader className="border-b border-gray-150 pb-3 -mx-6 px-6">
             <DialogTitle className="text-xl font-bold text-gray-900 text-left">
               {dialogMode === "add" ? "Thêm danh mục" : "Sửa danh mục"}
@@ -3280,17 +3280,17 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-center gap-6 pt-6 pb-2">
+            <div className="flex items-center justify-center gap-4 pt-6 pb-2">
               <button
                 type="button"
                 onClick={() => setCategoryDialogOpen(false)}
-                className="w-36 py-3 border border-gray-200 hover:bg-gray-50 text-gray-900 text-lg font-bold rounded-xl transition-all shadow-sm flex items-center justify-center"
+                className="flex-1 max-w-[144px] py-3 border border-gray-200 hover:bg-gray-50 text-gray-900 text-lg font-bold rounded-xl transition-all shadow-sm flex items-center justify-center"
               >
                 Hủy
               </button>
               <button
                 type="submit"
-                className="w-36 py-3 bg-[#e86b6b] hover:bg-[#e55956] text-white text-lg font-bold rounded-xl transition-all shadow-md flex items-center justify-center"
+                className="flex-1 max-w-[144px] py-3 bg-[#e86b6b] hover:bg-[#e55956] text-white text-lg font-bold rounded-xl transition-all shadow-md flex items-center justify-center"
               >
                 {dialogMode === "add" ? "Thêm" : "Sửa"}
               </button>
@@ -3303,7 +3303,7 @@ export default function AdminPage() {
           MODAL: ADD / EDIT AD DIALOG FORM
           ========================================== */}
       <Dialog open={adDialogOpen} onOpenChange={setAdDialogOpen}>
-        <DialogContent className="max-w-[480px] w-[95%] rounded-[24px] p-6 border border-gray-100 shadow-2xl bg-white text-[#2c3e50] outline-none [&>button]:hidden">
+        <DialogContent className="max-w-[480px] w-[95%] max-h-[90vh] overflow-y-auto rounded-[24px] p-6 border border-gray-100 shadow-2xl bg-white text-[#2c3e50] outline-none [&>button]:hidden">
           <DialogHeader className="border-b border-gray-150 pb-3 -mx-6 px-6">
             <DialogTitle className="text-xl font-bold text-gray-900 text-left">
               {dialogMode === "add" ? "Thêm quảng cáo" : "Sửa quảng cáo"}
@@ -3350,23 +3350,27 @@ export default function AdminPage() {
               <label className="text-sm font-bold text-gray-900">
                 Thời gian quảng cáo
               </label>
-              <div className="flex items-center gap-4 text-sm font-bold text-gray-900">
-                <span className="flex-shrink-0 text-gray-800">Từ:</span>
-                <input
-                  type="date"
-                  value={adForm.startDate || ""}
-                  onChange={(e) => setAdForm({ ...adForm, startDate: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm font-medium outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm"
-                  required
-                />
-                <span className="flex-shrink-0 text-gray-800">Đến:</span>
-                <input
-                  type="date"
-                  value={adForm.endDate || ""}
-                  onChange={(e) => setAdForm({ ...adForm, endDate: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm font-medium outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm"
-                  required
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm font-bold text-gray-900">
+                <div className="flex items-center gap-2">
+                  <span className="flex-shrink-0 text-gray-800 w-8 text-left">Từ:</span>
+                  <input
+                    type="date"
+                    value={adForm.startDate || ""}
+                    onChange={(e) => setAdForm({ ...adForm, startDate: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm font-medium outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm"
+                    required
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="flex-shrink-0 text-gray-800 w-8 text-left">Đến:</span>
+                  <input
+                    type="date"
+                    value={adForm.endDate || ""}
+                    onChange={(e) => setAdForm({ ...adForm, endDate: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm font-medium outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm"
+                    required
+                  />
+                </div>
               </div>
             </div>
 
@@ -3469,17 +3473,17 @@ export default function AdminPage() {
               )}
             </div>
 
-            <div className="flex items-center justify-center gap-6 pt-4 pb-2">
+            <div className="flex items-center justify-center gap-4 pt-4 pb-2">
               <button
                 type="button"
                 onClick={() => setAdDialogOpen(false)}
-                className="w-36 py-3 border border-gray-200 hover:bg-gray-50 text-gray-900 text-lg font-bold rounded-xl transition-all shadow-sm flex items-center justify-center"
+                className="flex-1 max-w-[144px] py-3 border border-gray-200 hover:bg-gray-50 text-gray-900 text-lg font-bold rounded-xl transition-all shadow-sm flex items-center justify-center"
               >
                 Hủy
               </button>
               <button
                 type="submit"
-                className="w-36 py-3 bg-[#e86b6b] hover:bg-[#e55956] text-white text-lg font-bold rounded-xl transition-all shadow-md flex items-center justify-center"
+                className="flex-1 max-w-[144px] py-3 bg-[#e86b6b] hover:bg-[#e55956] text-white text-lg font-bold rounded-xl transition-all shadow-md flex items-center justify-center"
               >
                 {dialogMode === "add" ? "Thêm" : "Sửa"}
               </button>
@@ -3492,7 +3496,7 @@ export default function AdminPage() {
           CONFIRM DELETE DIALOG
           ========================================== */}
       <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <DialogContent className="max-w-[460px] w-[95%] rounded-[24px] p-6 border border-gray-100 shadow-2xl bg-white text-[#2c3e50] outline-none [&>button]:hidden">
+        <DialogContent className="max-w-[460px] w-[95%] max-h-[90vh] overflow-y-auto rounded-[24px] p-6 border border-gray-100 shadow-2xl bg-white text-[#2c3e50] outline-none [&>button]:hidden">
           <DialogHeader className="border-b border-gray-150 pb-3 -mx-6 px-6">
             <DialogTitle className="text-xl font-bold text-gray-900 text-left">
               {activeTab === "posts" && "Xóa bài viết"}
@@ -3512,16 +3516,16 @@ export default function AdminPage() {
             </p>
           </div>
 
-          <div className="flex items-center justify-center gap-6 pb-2">
+          <div className="flex items-center justify-center gap-4 pb-2">
             <button
               onClick={() => setDeleteConfirmOpen(false)}
-              className="w-36 py-3 border border-gray-200 hover:bg-gray-50 text-gray-900 text-lg font-bold rounded-xl transition-all shadow-sm flex items-center justify-center"
+              className="flex-1 max-w-[144px] py-3 border border-gray-200 hover:bg-gray-50 text-gray-900 text-lg font-bold rounded-xl transition-all shadow-sm flex items-center justify-center"
             >
               Không
             </button>
             <button
               onClick={executeDelete}
-              className="w-36 py-3 bg-[#e86b6b] hover:bg-[#e55956] text-white text-lg font-bold rounded-xl transition-all shadow-md flex items-center justify-center"
+              className="flex-1 max-w-[144px] py-3 bg-[#e86b6b] hover:bg-[#e55956] text-white text-lg font-bold rounded-xl transition-all shadow-md flex items-center justify-center"
             >
               Có
             </button>
@@ -3533,7 +3537,7 @@ export default function AdminPage() {
           MODAL: ADD / EDIT MEDIA DIALOG
           ========================================== */}
       <Dialog open={mediaDialogOpen} onOpenChange={setMediaDialogOpen}>
-        <DialogContent className="max-w-[460px] w-[95%] rounded-[24px] p-6 border border-gray-100 shadow-2xl bg-white text-[#2c3e50] outline-none [&>button]:hidden">
+        <DialogContent className="max-w-[460px] w-[95%] max-h-[90vh] overflow-y-auto rounded-[24px] p-6 border border-gray-100 shadow-2xl bg-white text-[#2c3e50] outline-none [&>button]:hidden">
           <DialogHeader className="border-b border-gray-150 pb-3 -mx-6 px-6">
             <DialogTitle className="text-xl font-bold text-gray-900 text-left">
               {mediaDialogMode === "add" ? "Thêm file Media" : "Sửa file Media"}
@@ -3621,7 +3625,7 @@ export default function AdminPage() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
                   Kích thước (Size)
@@ -3664,17 +3668,17 @@ export default function AdminPage() {
               )}
             </div>
 
-            <div className="flex items-center justify-center gap-6 pt-6 pb-2">
+            <div className="flex items-center justify-center gap-4 pt-6 pb-2">
               <button
                 type="button"
                 onClick={() => setMediaDialogOpen(false)}
-                className="w-36 py-2.5 border border-gray-200 hover:bg-gray-50 text-gray-900 text-sm font-bold rounded-xl transition-all shadow-sm flex items-center justify-center"
+                className="flex-1 max-w-[144px] py-2.5 border border-gray-200 hover:bg-gray-50 text-gray-900 text-sm font-bold rounded-xl transition-all shadow-sm flex items-center justify-center"
               >
                 Hủy
               </button>
               <button
                 type="submit"
-                className="w-36 py-2.5 bg-[#e86b6b] hover:bg-[#e55956] text-white text-sm font-bold rounded-xl transition-all shadow-md flex items-center justify-center"
+                className="flex-1 max-w-[144px] py-2.5 bg-[#e86b6b] hover:bg-[#e55956] text-white text-sm font-bold rounded-xl transition-all shadow-md flex items-center justify-center"
               >
                 {mediaDialogMode === "add" ? "Thêm mới" : "Lưu sửa"}
               </button>
@@ -3689,7 +3693,7 @@ export default function AdminPage() {
       <Dialog open={mediaPreviewItem !== null} onOpenChange={(open) => {
         if (!open) setMediaPreviewItem(null);
       }}>
-        <DialogContent className="max-w-[800px] w-[95%] rounded-[24px] p-5 border border-gray-100 shadow-2xl bg-slate-950 text-white outline-none flex flex-col gap-4 [&>button]:text-white">
+        <DialogContent className="max-w-[800px] w-[95%] max-h-[90vh] overflow-y-auto rounded-[24px] p-5 border border-gray-100 shadow-2xl bg-slate-950 text-white outline-none flex flex-col gap-4 [&>button]:text-white">
           <DialogHeader className="border-b border-white/10 pb-3">
             <DialogTitle className="text-base font-bold text-white truncate text-left pr-8">
               Preview: {mediaPreviewItem?.title}
