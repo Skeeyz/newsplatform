@@ -284,13 +284,21 @@ export function Header({ settings }: HeaderProps) {
           {/* Bottom section of drawer: Utility links & Social Links */}
           <div className="border-t border-white/10 pt-4 flex flex-col gap-4 mt-auto">
             {utilityLink && (
-              <Link
-                href={utilityLink.href || "#"}
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-[#df3232] to-[#e24a48] text-white font-extrabold text-[11px] text-center shadow-lg shadow-[#df3232]/20 hover:opacity-95 active:scale-98 transition-all"
-              >
-                {utilityLink.label}
-              </Link>
+              utilityLink.href ? (
+                <Link
+                  href={utilityLink.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full py-2.5 rounded-lg bg-gradient-to-r from-[#df3232] to-[#e24a48] text-white font-extrabold text-[11px] text-center shadow-lg shadow-[#df3232]/20 hover:opacity-95 active:scale-98 transition-all"
+                >
+                  {utilityLink.label}
+                </Link>
+              ) : (
+                <div
+                  className="w-full py-2.5 rounded-lg bg-gradient-to-r from-[#df3232] to-[#e24a48] text-white font-extrabold text-[11px] text-center shadow-lg shadow-[#df3232]/20 opacity-80 cursor-default select-none pointer-events-none"
+                >
+                  {utilityLink.label}
+                </div>
+              )
             )}
 
             {/* Social Links */}
