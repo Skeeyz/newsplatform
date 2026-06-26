@@ -45,6 +45,7 @@ import {
   Link2,
   Globe
 } from "lucide-react";
+import { getAdminSettings, updateAdminSettings, getAdminMedia, uploadAdminMedia, deleteAdminMedia } from "@/lib/api/adminClient";
 import { Toaster, toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -152,128 +153,7 @@ export default function AdminPage() {
     folder?: string;
   }
 
-  const [mediaItems, setMediaItems] = useState<MediaItem[]>([
-    {
-      id: 1,
-      title: "banner-homepage.jpg",
-      type: "image",
-      url: "/marketing_tiles.png",
-      size: "1.2 MB",
-      dimensions: "1200x800",
-      createdAt: "2026-06-20",
-      folder: "Thumbnails"
-    },
-    {
-      id: 2,
-      title: "banner-homepage.jpg",
-      type: "image",
-      url: "/laptop_charts.png",
-      size: "804 KB",
-      dimensions: "1280x800",
-      createdAt: "2026-06-20",
-      folder: "Thumbnails"
-    },
-    {
-      id: 3,
-      title: "intro-video.mp4",
-      type: "video",
-      url: "https://www.w3schools.com/html/mov_bbb.mp4",
-      size: "13.8 MB",
-      duration: "00:10",
-      createdAt: "2026-06-20",
-      folder: "Thumbnails"
-    },
-    {
-      id: 4,
-      title: "Nvidia RTX 5090 Leak Cover",
-      type: "image",
-      url: "/tech_2026_cover.png",
-      size: "763 KB",
-      dimensions: "1280x720",
-      createdAt: "2026-05-24",
-      folder: "Public"
-    },
-    {
-      id: 5,
-      title: "Apple Vision Pro Space",
-      type: "image",
-      url: "/tech_2026_vision.png",
-      size: "421 KB",
-      dimensions: "1280x800",
-      createdAt: "2026-05-27",
-      folder: "Public"
-    },
-    {
-      id: 6,
-      title: "AI robot in warehouse",
-      type: "image",
-      url: "/tech_2026_warehouse.png",
-      size: "891 KB",
-      dimensions: "1024x768",
-      createdAt: "2026-05-24",
-      folder: "Public"
-    },
-    {
-      id: 7,
-      title: "Huawei Autonomous Electric Car",
-      type: "image",
-      url: "/tech_2026_car.png",
-      size: "735 KB",
-      dimensions: "1920x1080",
-      createdAt: "2026-05-24",
-      folder: "Videos"
-    },
-    {
-      id: 8,
-      title: "eSports News Feature",
-      type: "image",
-      url: "/esports_news.png",
-      size: "1.05 MB",
-      dimensions: "1600x900",
-      createdAt: "2026-05-28",
-      folder: "Public"
-    },
-    {
-      id: 9,
-      title: "GTA 6 Beta Gameplay Preview",
-      type: "image",
-      url: "/gta6_beta.png",
-      size: "915 KB",
-      dimensions: "1920x1080",
-      createdAt: "2026-05-29",
-      folder: "Videos"
-    },
-    {
-      id: 10,
-      title: "Ốc Mượn Hồn Poster",
-      type: "image",
-      url: "/oc_muon_hon_poster.png",
-      size: "757 KB",
-      dimensions: "1080x1920",
-      createdAt: "2026-05-27",
-      folder: "Public"
-    },
-    {
-      id: 11,
-      title: "Soulslike Game Announcement",
-      type: "image",
-      url: "/soulslike_game.png",
-      size: "854 KB",
-      dimensions: "1920x1080",
-      createdAt: "2026-05-25",
-      folder: "Public"
-    },
-    {
-      id: 12,
-      title: "Intro Video 2026",
-      type: "video",
-      url: "https://www.w3schools.com/html/mov_bbb.mp4",
-      size: "12.4 MB",
-      duration: "00:10",
-      createdAt: "2026-06-01",
-      folder: "Videos"
-    }
-  ]);
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
 
   const [siteSettings, setSiteSettings] = useState(mockSiteSettings);
   const [logoFooterActiveTab, setLogoFooterActiveTab] = useState<"general" | "footer" | "social" | "columns">("general");
@@ -288,17 +168,7 @@ export default function AdminPage() {
   const [footerEmail, setFooterEmail] = useState("congtyphdstudio@gmail.com");
   const [footerLicense, setFooterLicense] = useState("Số bao nhiêu ....");
 
-  const [mediaDialogOpen, setMediaDialogOpen] = useState(false);
-  const [mediaDialogMode, setMediaDialogMode] = useState<"add" | "edit">("add");
-  const [mediaEditId, setMediaEditId] = useState<number | null>(null);
-  const [mediaForm, setMediaForm] = useState<Partial<MediaItem>>({
-    title: "",
-    type: "image",
-    url: "",
-    size: "100 KB",
-    dimensions: "1280x720",
-    duration: ""
-  });
+  const [mediaSort, setMediaSort] = useState<"newest" | "oldest" | "az">("newest");
 
   const [mediaPreviewItem, setMediaPreviewItem] = useState<MediaItem | null>(null);
   const [mediaSearchQuery, setMediaSearchQuery] = useState("");
@@ -310,6 +180,48 @@ export default function AdminPage() {
   const [dashboardDay, setDashboardDay] = useState("");
   const [dashboardMonth, setDashboardMonth] = useState("");
   const [dashboardYear, setDashboardYear] = useState("");
+
+  const loadMedia = async () => {
+    try {
+      const res = await getAdminMedia(activeFolder || "");
+      if (res && res.files) {
+        setMediaItems(res.files.map((f: any, idx: number) => ({
+          id: idx + 1,
+          title: f.name,
+          type: f.type,
+          url: f.url,
+          size: (f.size / 1024).toFixed(2) + " KB",
+          createdAt: f.lastModified ? new Date(f.lastModified).toISOString().split("T")[0] : "",
+          folder: f.key.split('/')[0] || "Public"
+        })));
+      }
+    } catch (err) {}
+  };
+
+  useEffect(() => {
+    if (activeTab === "media") {
+      loadMedia();
+    }
+    if (activeTab === "logo-footer" || activeTab === "dashboard") {
+      getAdminSettings().then(res => {
+        if (res) {
+          setSiteSettings(res as any);
+          if (res.brand) {
+            setLogoWebsiteName(res.brand.name || "Tên Web");
+            setLogoUrl(res.brand.logo_url || null);
+            setFooterOperator(res.brand.copyright || "");
+          }
+          if (res.footer) {
+            setFooterAddress(res.footer.address || "");
+            setFooterPhone(res.footer.phone || "");
+            setFooterEmail(res.footer.email || "");
+            setFooterLicense(res.footer.license || "");
+            setFooterResponsible(res.footer.responsible || "");
+          }
+        }
+      }).catch(() => {});
+    }
+  }, [activeTab, activeFolder]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentView, setCurrentView] = useState<"list" | "editor">("list");
   const [postCoverImage, setPostCoverImage] = useState<string | null>(null);
@@ -578,14 +490,27 @@ export default function AdminPage() {
   const adsTotalPages = Math.ceil(filteredAds.length / itemsPerPage) || 1;
 
   const filteredMedia = useMemo(() => {
-    return mediaItems.filter((item) => {
+    const filtered = mediaItems.filter((item) => {
       const matchesSearch = item.title.toLowerCase().includes(mediaSearchQuery.toLowerCase()) ||
         item.url.toLowerCase().includes(mediaSearchQuery.toLowerCase());
       const matchesType = mediaTypeFilter === "all" || item.type === mediaTypeFilter;
       const matchesFolder = activeFolder ? (item.folder === activeFolder) : true;
       return matchesSearch && matchesType && matchesFolder;
     });
-  }, [mediaItems, mediaSearchQuery, mediaTypeFilter, activeFolder]);
+
+    return filtered.sort((a, b) => {
+      if (mediaSort === "newest") {
+        return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      }
+      if (mediaSort === "oldest") {
+        return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+      }
+      if (mediaSort === "az") {
+        return a.title.localeCompare(b.title);
+      }
+      return 0;
+    });
+  }, [mediaItems, mediaSearchQuery, mediaTypeFilter, activeFolder, mediaSort]);
 
   const paginatedMedia = useMemo(() => {
     const start = (mediaPage - 1) * mediaItemsPerPage;
@@ -972,66 +897,34 @@ export default function AdminPage() {
     }
   };
 
-  const handleMediaDirectUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMediaDirectUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    Array.from(files).forEach((file) => {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
       const isVideo = file.type.startsWith("video/");
       const isImage = file.type.startsWith("image/");
       
       if (!isImage && !isVideo) {
-        toast.error(`File "${file.name}" không đúng định dạng hình ảnh hoặc video!`);
-        return;
+        toast.error(`File "${file.name}" không hợp lệ!`);
+        continue;
       }
 
-      let sizeStr = "";
-      if (file.size < 1024 * 1024) {
-        sizeStr = `${(file.size / 1024).toFixed(0)} KB`;
-      } else {
-        sizeStr = `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
+      toast.loading(`Đang tải lên ${file.name}...`, { id: `upload-${file.name}` });
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        if (activeFolder) formData.append("folder", activeFolder);
+
+        await uploadAdminMedia(formData);
+        toast.success(`Tải lên thành công: ${file.name}`, { id: `upload-${file.name}` });
+      } catch (err: any) {
+        toast.error(`Lỗi tải lên ${file.name}: ${err.message}`, { id: `upload-${file.name}` });
       }
-
-      const objectUrl = URL.createObjectURL(file);
-      const titleWithoutExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
-
-      const newItem: MediaItem = {
-        id: Date.now() + Math.random(),
-        title: file.name,
-        type: isVideo ? "video" : "image",
-        url: objectUrl,
-        size: sizeStr,
-        createdAt: new Date().toLocaleDateString("en-GB"),
-        folder: activeFolder || "Public"
-      };
-
-      setMediaItems(prev => [newItem, ...prev]);
-      toast.success(`Đã thêm thành công media: ${file.name}`);
-
-      if (isImage) {
-        const img = new Image();
-        img.onload = () => {
-          const dims = `${img.width}x${img.height}`;
-          setMediaItems((prev) =>
-            prev.map((m) => (m.id === newItem.id ? { ...m, dimensions: dims } : m))
-          );
-        };
-        img.src = objectUrl;
-      } else if (isVideo) {
-        const video = document.createElement("video");
-        video.preload = "metadata";
-        video.onloadedmetadata = () => {
-          const minutes = Math.floor(video.duration / 60);
-          const seconds = Math.floor(video.duration % 60);
-          const durationStr = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-          setMediaItems((prev) =>
-            prev.map((m) => (m.id === newItem.id ? { ...m, duration: durationStr } : m))
-          );
-        };
-        video.src = objectUrl;
-      }
-    });
-
+    }
+    
+    loadMedia();
     e.target.value = "";
   };
 
@@ -1609,7 +1502,7 @@ export default function AdminPage() {
           {/* Logo Brand Header */}
           <div className="flex items-center gap-3.5 mb-10 mt-2">
             <div className="w-[50px] h-[50px] bg-[#d9d9d9] rounded-full flex-shrink-0 border-2 border-white/25 shadow-sm" />
-            <span className="font-extrabold text-[22px] tracking-tight drop-shadow-sm">{siteSettings.header.logoText || "Logo"}</span>
+            <span className="font-extrabold text-[22px] tracking-tight drop-shadow-sm">{logoWebsiteName || "Logo"}</span>
             <button
               onClick={() => setSidebarOpen(false)}
               className="ml-auto lg:hidden text-white hover:text-red-100 p-1"
@@ -2117,9 +2010,24 @@ export default function AdminPage() {
                   type="button"
                   onClick={() => {
                     toast.loading("Đang lưu cấu hình...", { id: "save-logo-footer" });
-                    setTimeout(() => {
+                    updateAdminSettings({
+                      brand: {
+                        name: logoWebsiteName,
+                        logo_url: logoUrl,
+                        copyright: footerOperator,
+                      },
+                      footer: {
+                        address: footerAddress,
+                        phone: footerPhone,
+                        email: footerEmail,
+                        license: footerLicense,
+                        responsible: footerResponsible
+                      }
+                    }).then(() => {
                       toast.success("Lưu thay đổi thành công!", { id: "save-logo-footer" });
-                    }, 800);
+                    }).catch(() => {
+                      toast.error("Lỗi khi lưu cấu hình!", { id: "save-logo-footer" });
+                    });
                   }}
                   className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#E55956] hover:bg-[#cb4643] active:scale-[0.98] text-white text-sm font-bold rounded-xl shadow-md transition-all self-start sm:self-center"
                 >
@@ -2438,10 +2346,14 @@ export default function AdminPage() {
 
                     {/* Sorting select */}
                     <div className="relative">
-                      <select className="pl-3 pr-7 py-1 border border-gray-300 rounded-lg text-xs font-bold text-gray-700 appearance-none bg-white focus:outline-none min-w-[90px] cursor-pointer">
-                        <option>Mới nhất</option>
-                        <option>Cũ nhất</option>
-                        <option>Tên A-Z</option>
+                      <select 
+                        value={mediaSort}
+                        onChange={(e) => setMediaSort(e.target.value as any)}
+                        className="pl-3 pr-7 py-1 border border-gray-300 rounded-lg text-xs font-bold text-gray-700 appearance-none bg-white focus:outline-none min-w-[90px] cursor-pointer"
+                      >
+                        <option value="newest">Mới nhất</option>
+                        <option value="oldest">Cũ nhất</option>
+                        <option value="az">Tên A-Z</option>
                       </select>
                       <ChevronDown size={11} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                     </div>
@@ -2528,19 +2440,6 @@ export default function AdminPage() {
                                     title="Xem trước"
                                   >
                                     <Eye size={13} />
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setMediaDialogMode("edit");
-                                      setMediaEditId(item.id);
-                                      setMediaForm(item);
-                                      setMediaDialogOpen(true);
-                                    }}
-                                    className="w-8 h-8 rounded-full bg-white hover:bg-gray-100 text-gray-800 flex items-center justify-center shadow transition-all active:scale-95"
-                                    title="Chỉnh sửa"
-                                  >
-                                    <SquarePen size={13} />
                                   </button>
                                   <button
                                     type="button"
@@ -3533,161 +3432,7 @@ export default function AdminPage() {
         </DialogContent>
       </Dialog>
 
-      {/* ==========================================
-          MODAL: ADD / EDIT MEDIA DIALOG
-          ========================================== */}
-      <Dialog open={mediaDialogOpen} onOpenChange={setMediaDialogOpen}>
-        <DialogContent className="max-w-[460px] w-[95%] max-h-[90vh] overflow-y-auto rounded-[24px] p-6 border border-gray-100 shadow-2xl bg-white text-[#2c3e50] outline-none [&>button]:hidden">
-          <DialogHeader className="border-b border-gray-150 pb-3 -mx-6 px-6">
-            <DialogTitle className="text-xl font-bold text-gray-900 text-left">
-              {mediaDialogMode === "add" ? "Thêm file Media" : "Sửa file Media"}
-            </DialogTitle>
-          </DialogHeader>
-
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!mediaForm.title?.trim() || !mediaForm.url?.trim()) {
-                toast.error("Vui lòng điền đầy đủ tiêu đề và URL!");
-                return;
-              }
-
-              if (mediaDialogMode === "add") {
-                const newItem: MediaItem = {
-                  id: mediaItems.length > 0 ? Math.max(...mediaItems.map(m => m.id)) + 1 : 1,
-                  title: mediaForm.title,
-                  type: mediaForm.type || "image",
-                  url: mediaForm.url,
-                  size: mediaForm.size || "150 KB",
-                  dimensions: mediaForm.type === "image" ? (mediaForm.dimensions || "1280x720") : undefined,
-                  duration: mediaForm.type === "video" ? (mediaForm.duration || "01:00") : undefined,
-                  createdAt: new Date().toLocaleDateString("en-GB"),
-                  folder: activeFolder || "Public"
-                };
-                setMediaItems([newItem, ...mediaItems]);
-                toast.success("Thêm file media mới thành công!");
-              } else {
-                setMediaItems(
-                  mediaItems.map((m) =>
-                    m.id === mediaEditId
-                      ? ({ ...m, ...mediaForm } as MediaItem)
-                      : m
-                  )
-                );
-                toast.success("Cập nhật thông tin file media thành công!");
-              }
-              setMediaDialogOpen(false);
-            }}
-            className="space-y-4 pt-4"
-          >
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
-                Tiêu đề Media
-              </label>
-              <input
-                type="text"
-                value={mediaForm.title || ""}
-                onChange={(e) => setMediaForm({ ...mediaForm, title: e.target.value })}
-                placeholder="Nhập tiêu đề..."
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm font-medium"
-                required
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
-                Loại định dạng
-              </label>
-              <div className="relative">
-                <select
-                  value={mediaForm.type || "image"}
-                  onChange={(e) => setMediaForm({ ...mediaForm, type: e.target.value as "image" | "video" })}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm font-semibold text-gray-800 appearance-none cursor-pointer"
-                >
-                  <option value="image">Hình ảnh (Image)</option>
-                  <option value="video">Phim / Video</option>
-                </select>
-                <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
-                Đường dẫn URL
-              </label>
-              <input
-                type="text"
-                value={mediaForm.url || ""}
-                onChange={(e) => setMediaForm({ ...mediaForm, url: e.target.value })}
-                placeholder="Ví dụ: /soulslike_game.png hoặc URL ngoài..."
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm font-mono"
-                required
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
-                  Kích thước (Size)
-                </label>
-                <input
-                  type="text"
-                  value={mediaForm.size || ""}
-                  onChange={(e) => setMediaForm({ ...mediaForm, size: e.target.value })}
-                  placeholder="Ví dụ: 350 KB, 12 MB..."
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm font-medium"
-                />
-              </div>
-
-              {mediaForm.type === "video" ? (
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
-                    Thời lượng (Duration)
-                  </label>
-                  <input
-                    type="text"
-                    value={mediaForm.duration || ""}
-                    onChange={(e) => setMediaForm({ ...mediaForm, duration: e.target.value })}
-                    placeholder="Ví dụ: 01:24..."
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm font-mono"
-                  />
-                </div>
-              ) : (
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
-                    Độ phân giải (Resolution)
-                  </label>
-                  <input
-                    type="text"
-                    value={mediaForm.dimensions || ""}
-                    onChange={(e) => setMediaForm({ ...mediaForm, dimensions: e.target.value })}
-                    placeholder="Ví dụ: 1920x1080..."
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#E55956] focus:ring-2 focus:ring-[#E55956]/15 transition-all bg-white shadow-sm font-mono"
-                  />
-                </div>
-              )}
-            </div>
-
-            <div className="flex items-center justify-center gap-4 pt-6 pb-2">
-              <button
-                type="button"
-                onClick={() => setMediaDialogOpen(false)}
-                className="flex-1 max-w-[144px] py-2.5 border border-gray-200 hover:bg-gray-50 text-gray-900 text-sm font-bold rounded-xl transition-all shadow-sm flex items-center justify-center"
-              >
-                Hủy
-              </button>
-              <button
-                type="submit"
-                className="flex-1 max-w-[144px] py-2.5 bg-[#e86b6b] hover:bg-[#e55956] text-white text-sm font-bold rounded-xl transition-all shadow-md flex items-center justify-center"
-              >
-                {mediaDialogMode === "add" ? "Thêm mới" : "Lưu sửa"}
-              </button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* ==========================================
+        {/* ==========================================
           MODAL: MEDIA PREVIEW DIALOG
           ========================================== */}
       <Dialog open={mediaPreviewItem !== null} onOpenChange={(open) => {
