@@ -18,7 +18,8 @@ export async function listAdminCategories(options: CategoryListOptions = {}) {
 
   let query = supabaseAdmin
     .from('categories')
-    .select('*', { count: 'exact' })
+    .select('*, articles(count)', { count: 'exact' })
+    .is('deleted_at', null)
     .range(from, to)
     .order(options.sortBy ?? 'priority', {
       ascending: (options.sortOrder ?? 'desc') === 'asc',
@@ -30,7 +31,13 @@ export async function listAdminCategories(options: CategoryListOptions = {}) {
 
   const { data, error, count } = await query
   if (error) throw error
-  return { items: data ?? [], meta: pageMeta(count, page, limit) }
+  
+  const items = data?.map(item => ({
+    ...item,
+    postCount: item.articles?.[0]?.count || 0
+  })) || []
+  
+  return { items, meta: pageMeta(count, page, limit) }
 }
 
 export async function listPublicCategories(limit = 100) {

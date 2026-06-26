@@ -13,7 +13,7 @@ export const publicCategoryListQuerySchema = z.object({
 export const createCategorySchema = z.object({
   name: z.string().trim().min(2).max(100),
   slug: z.string().trim().min(2).max(100).optional(),
-  priority: z.coerce.number().int().default(0),
+  priority: z.coerce.number().int().min(0).max(10).default(0),
   description: z.string().trim().nullable().optional(),
   status: z.enum(['active', 'inactive']).default('active')
 })

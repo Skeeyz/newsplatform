@@ -45,7 +45,7 @@ import {
   Link2,
   Globe
 } from "lucide-react";
-import { getAdminSettings, updateAdminSettings, getAdminMedia, uploadAdminMedia, deleteAdminMedia } from "@/lib/api/adminClient";
+import { getAdminSettings, updateAdminSettings, getAdminMedia, uploadAdminMedia, deleteAdminMedia, getAdminCategories, createAdminCategory, updateAdminCategory, deleteAdminCategory } from "@/lib/api/adminClient";
 import { Toaster, toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -198,7 +198,27 @@ export default function AdminPage() {
     } catch (err) {}
   };
 
+  const loadCategories = async () => {
+    try {
+      const res = await getAdminCategories();
+      if (res && res.items) {
+        setCategories(res.items.map((c: any) => ({
+          id: c.id,
+          name: c.name,
+          postCount: c.postCount || 0,
+          priority: c.priority || 0,
+          status: c.status === "active" ? "Hoạt động" : "Ngừng hoạt động"
+        })));
+      }
+    } catch (err) {
+      toast.error("Không thể tải danh sách danh mục");
+    }
+  };
+
   useEffect(() => {
+    if (activeTab === "categories") {
+      loadCategories();
+    }
     if (activeTab === "media") {
       loadMedia();
     }
@@ -316,14 +336,7 @@ export default function AdminPage() {
     }
   ]);
 
-  const [categories, setCategories] = useState<Category[]>([
-    { id: 1, name: "Tin Tức", postCount: 151, priority: 1, status: "Hoạt động" },
-    { id: 2, name: "Anime/Manga", postCount: 107, priority: 2, status: "Hoạt động" },
-    { id: 3, name: "Công nghệ", postCount: 86, priority: 3, status: "Hoạt động" },
-    { id: 4, name: "Phim", postCount: 64, priority: 4, status: "Hoạt động" },
-    { id: 5, name: "Kiến thức", postCount: 23, priority: 5, status: "Hoạt động" },
-    { id: 6, name: "Cái gì đó", postCount: 23, priority: 0, status: "Hoạt động" }
-  ]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const [ads, setAds] = useState<Ad[]>([
     {
@@ -727,15 +740,20 @@ export default function AdminPage() {
     setDeleteConfirmOpen(true);
   };
 
-  const executeDelete = () => {
+  const executeDelete = async () => {
     if (targetIdToDelete === null) return;
 
     if (activeTab === "posts") {
       setPosts(posts.filter(p => p.id !== targetIdToDelete));
       toast.success("Xóa bài viết thành công!");
     } else if (activeTab === "categories") {
-      setCategories(categories.filter(c => c.id !== targetIdToDelete));
-      toast.success("Xóa danh mục thành công!");
+      try {
+        await deleteAdminCategory(targetIdToDelete);
+        toast.success("Xóa danh mục thành công!");
+        loadCategories();
+      } catch (err) {
+        toast.error("Lỗi khi xóa danh mục!");
+      }
     } else {
       setAds(ads.filter(a => a.id !== targetIdToDelete));
       toast.success("Xóa quảng cáo thành công!");
@@ -744,7 +762,7 @@ export default function AdminPage() {
     setTargetIdToDelete(null);
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (activeTab === "posts") {
       if (!postForm.title?.trim()) {
@@ -771,21 +789,28 @@ export default function AdminPage() {
         toast.error("Vui lòng nhập tên danh mục!");
         return;
       }
-      if (dialogMode === "add") {
-        const newCategory: Category = {
-          id: categories.length > 0 ? Math.max(...categories.map(c => c.id)) + 1 : 1,
+      try {
+        toast.loading(dialogMode === "add" ? "Đang thêm danh mục..." : "Đang cập nhật...", { id: "cat-submit" });
+        const payload = {
           name: categoryForm.name,
-          postCount: 0,
           priority: Number(categoryForm.priority) || 0,
-          status: categoryForm.status || "Hoạt động"
+          status: categoryForm.status === "Hoạt động" ? "active" : "inactive"
         };
-        setCategories([...categories, newCategory]);
-        toast.success("Thêm danh mục mới thành công!");
-      } else {
-        setCategories(categories.map(c => (c.id === editId ? { ...c, ...categoryForm } as Category : c)));
-        toast.success("Cập nhật danh mục thành công!");
+        
+        if (dialogMode === "add") {
+          await createAdminCategory(payload);
+          toast.success("Thêm danh mục mới thành công!", { id: "cat-submit" });
+        } else {
+          if (editId) {
+            await updateAdminCategory(editId, payload);
+            toast.success("Cập nhật danh mục thành công!", { id: "cat-submit" });
+          }
+        }
+        loadCategories();
+        setCategoryDialogOpen(false);
+      } catch (err) {
+        toast.error("Có lỗi xảy ra, vui lòng thử lại!", { id: "cat-submit" });
       }
-      setCategoryDialogOpen(false);
     } else {
       if (!adForm.name?.trim()) {
         toast.error("Vui lòng nhập tên quảng cáo!");
