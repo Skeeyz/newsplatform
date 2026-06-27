@@ -45,7 +45,7 @@ import {
   Link2,
   Globe
 } from "lucide-react";
-import { getAdminSettings, updateAdminSettings, getAdminMedia, uploadAdminMedia, deleteAdminMedia, getAdminCategories, createAdminCategory, updateAdminCategory, deleteAdminCategory } from "@/lib/api/adminClient";
+import { getAdminSettings, updateAdminSettings, getAdminMedia, uploadAdminMedia, deleteAdminMedia, getAdminCategories, createAdminCategory, updateAdminCategory, deleteAdminCategory, getAdminArticles, createAdminArticle, updateAdminArticle, deleteAdminArticle } from "@/lib/api/adminClient";
 import { Toaster, toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -56,6 +56,65 @@ import {
   DialogFooter
 } from "@/components/ui/dialog";
 import { mockSiteSettings } from "@/lib/mockSiteSettings";
+
+const htmlToBlocks = (html: string) => {
+  if (!html) return [];
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const blocks: any[] = [];
+  
+  doc.body.childNodes.forEach((node) => {
+    if (node.nodeName === 'P') {
+      const el = node as HTMLElement;
+      if (el.querySelector('strong')) {
+        blocks.push({ type: 'bold-paragraph', text: el.textContent || '' });
+      } else {
+        blocks.push({ type: 'paragraph', text: el.textContent || '' });
+      }
+    } else if (node.nodeName === 'DIV') {
+      const el = node as HTMLElement;
+      const img = el.querySelector('img');
+      if (img) {
+        const src = img.getAttribute('src');
+        const pTags = el.querySelectorAll('p');
+        let caption = '';
+        if (pTags.length > 0) caption = pTags[pTags.length - 1].textContent || '';
+        if (!caption && img.getAttribute('alt')) caption = img.getAttribute('alt') || '';
+        
+        if (src) {
+          blocks.push({ type: 'image', src, caption });
+        }
+      } else {
+        if (el.textContent?.trim()) {
+           blocks.push({ type: 'paragraph', text: el.textContent });
+        }
+      }
+    } else if (node.nodeName === 'UL' || node.nodeName === 'OL') {
+      const el = node as HTMLElement;
+      el.querySelectorAll('li').forEach(li => {
+        blocks.push({ type: 'paragraph', text: li.textContent || '' });
+      });
+    }
+  });
+  return blocks;
+};
+
+const blocksToHtml = (blocks: any[]) => {
+  if (!Array.isArray(blocks)) return typeof blocks === 'string' ? blocks : '';
+  return blocks.map(block => {
+    if (block.type === "paragraph") {
+      return `<p>${block.text || ''}</p>`;
+    } else if (block.type === "bold-paragraph") {
+      return `<p><strong>${block.text || ''}</strong></p>`;
+    } else if (block.type === "image") {
+      return `<div class="my-4">
+  <img src="${block.src || ''}" alt="${block.caption || ''}" class="w-full rounded-xl border border-gray-200 shadow-sm" />
+  ${block.caption ? `<p class="text-center text-xs italic text-gray-500 mt-1.5">${block.caption}</p>` : ''}
+</div>`;
+    }
+    return '';
+  }).join('\\n');
+};
 
 // ==========================================
 // TYPES
@@ -200,7 +259,7 @@ export default function AdminPage() {
 
   const loadCategories = async () => {
     try {
-      const res = await getAdminCategories();
+      const res = await getAdminCategories("?limit=100");
       if (res && res.items) {
         setCategories(res.items.map((c: any) => ({
           id: c.id,
@@ -215,7 +274,31 @@ export default function AdminPage() {
     }
   };
 
+  const loadPosts = async () => {
+    try {
+      const res = await getAdminArticles("?limit=1000");
+      if (res && res.items) {
+        setPosts(res.items.map((a: any) => ({
+          id: a.id,
+          title: a.title,
+          category: a.categories?.name || "Tin tức",
+          views: a.views || 0,
+          status: a.status === 'published' ? 'Đã đăng' : 'Nháp',
+          createdAt: a.created_at ? new Date(a.created_at).toISOString().split('T')[0] : "",
+          content: a.content ? blocksToHtml(a.content) : "",
+          coverImage: a.thumbnail_key || ""
+        })));
+      }
+    } catch (err) {
+      toast.error("Không thể tải danh sách bài viết");
+    }
+  };
+
   useEffect(() => {
+    if (activeTab === "posts") {
+      loadPosts();
+      if (categories.length === 0) loadCategories();
+    }
     if (activeTab === "categories") {
       loadCategories();
     }
@@ -269,72 +352,7 @@ export default function AdminPage() {
   const [postEndDate, setPostEndDate] = useState("");
 
   // In-Memory Database (initially populated with screenshot data)
-  const [posts, setPosts] = useState<Post[]>([
-    {
-      id: 1,
-      title: "Tin tức công nghệ mới nhất 2026",
-      category: "Công nghệ",
-      views: 15204,
-      status: "Đã đăng",
-      createdAt: "2026-05-24"
-    },
-    {
-      id: 2,
-      title: "Kinh tế thế giới trong năm nay",
-      category: "Tin tức",
-      views: 9325,
-      status: "Đã đăng",
-      createdAt: "2026-05-24"
-    },
-    {
-      id: 3,
-      title: "Kết quả V-League vòng đấu mới nhất",
-      category: "Tin tức",
-      views: 8520,
-      status: "Nháp",
-      createdAt: "2026-05-24"
-    },
-    {
-      id: 4,
-      title: "Ốc Mượn Hồn tung dàn poster nhân vật cực chất",
-      category: "Phim",
-      views: 12050,
-      status: "Đã đăng",
-      createdAt: "2026-05-27"
-    },
-    {
-      id: 5,
-      title: "NVIDIA GeForce RTX 5090 rò rỉ thông số khủng",
-      category: "Công nghệ",
-      views: 18900,
-      status: "Đã đăng",
-      createdAt: "2026-05-24"
-    },
-    {
-      id: 6,
-      title: "One Piece 1116 chính thức ra mắt toàn cầu",
-      category: "Anime/Manga",
-      views: 31002,
-      status: "Đã đăng",
-      createdAt: "2026-05-24"
-    },
-    {
-      id: 7,
-      title: "Apple công bố chip M5 với nhân xử lý AI thế hệ mới",
-      category: "Công nghệ",
-      views: 14500,
-      status: "Đã đăng",
-      createdAt: "2026-05-24"
-    },
-    {
-      id: 8,
-      title: "Dự báo thời tiết 28/5/2026: Không khí mát tràn về miền Bắc",
-      category: "Tin tức",
-      views: 5200,
-      status: "Nháp",
-      createdAt: "2026-05-28"
-    }
-  ]);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -717,14 +735,10 @@ export default function AdminPage() {
     setEditId(item.id);
     if (activeTab === "posts") {
       setPostForm({
-        ...item,
-        title: "Tin tức công nghệ mới nhất 2026",
-        category: "Công nghệ",
-        status: "Đã đăng"
+        ...item
       });
-      const DEFAULT_TECH_CONTENT = `<p><strong>Năm 2026 đánh dấu bước ngoặt lớn khi công nghệ không còn dừng lại ở màn hình điện thoại mà chính thức bước ra thế giới thực, thay đổi toàn diện cách con người sống và làm việc.</strong></p>\n<p>Theo báo cáo toàn cảnh công nghệ vừa công bố, thị trường năm nay ghi nhận 3 làn sóng đột phá dịch chuyển mạnh mẽ:</p>\n<ul class="list-disc pl-5 space-y-2">\n  <li><strong>Sự trỗi dậy của AI Agent (Tác nhân AI tự chủ):</strong> Trí tuệ nhân tạo năm 2026 đã vượt qua thế giới chatbot thông thường. Các "AI Agent" giờ đây có khả năng tự tư duy, lên kế hoạch và thực hiện các chuỗi công việc phức tạp như một nhân sự thực thụ mà không cần con người can thiệp từng bước.</li>\n</ul>\n<div class="my-4">\n  <img src="/tech_2026_robot.png" alt="Sự trỗi dậy của AI" class="w-full rounded-xl border border-gray-200 shadow-sm" />\n</div>\n<ul class="list-disc pl-5 space-y-2">\n  <li><strong>Kính thực tế hỗn hợp (MR) thay thế Smartphone:</strong> Điện thoại thông minh bắt đầu thoái lui khi các dòng kính thông minh thế hệ mới đạt trọng lượng siêu nhẹ như kính cận. Người dùng dịch chuyển sang làm việc và giải trí hoàn toàn trong không gian số 3D (Spatial Computing).</li>\n</ul>\n<div class="my-4">\n  <img src="/tech_2026_vision.png" alt="Apple Vision Pro" class="w-full rounded-xl border border-gray-200 shadow-sm" />\n  <p class="text-center text-xs italic text-gray-500 mt-1.5">Kính thực tế hỗn hợp Apple Vision Pro</p>\n</div>\n<ul class="list-disc pl-5 space-y-2">\n  <li><strong>Robot nhân hình và Xe tự lái đổ bộ đời sống:</strong> Robot dáng người (Humanoid Robot) đã chính thức được thương mại hóa, tham gia vào các dây chuyền sản xuất và hỗ trợ việc nhà. Song song đó, mạng lưới Robotaxi tự lái cấp độ 4 kết hợp pin trạng thái rắn (sạc 5 phút, đi 1.000km) đã trở thành phương tiện công cộng phổ biến tại các đô thị lớn.</li>\n</ul>\n<div class="my-4 flex flex-col gap-4">\n  <img src="/tech_2026_warehouse.png" alt="Robot in warehouse" class="w-full rounded-xl border border-gray-200 shadow-sm" />\n  <img src="/tech_2026_car.png" alt="Huawei Car" class="w-full rounded-xl border border-gray-200 shadow-sm" />\n  <p class="text-center text-xs italic text-gray-500 mt-1.5">Công nghệ tự lái trên xe điện Huawei: tự lái và tự đỗ mượt mà</p>\n</div>\n<p class="mt-4">Công nghệ năm 2026 mang đến sự tiện nghi tối đa nhưng cũng đặt ra thách thức lớn về an toàn dữ liệu. Việc làm chủ và thích ứng nhanh với các công cụ AI tự chủ sẽ là khóa quyết định năng lực cạnh tranh của cả cá nhân lẫn doanh nghiệp trong giai đoạn này.</p>`;
-      setPostContent(DEFAULT_TECH_CONTENT);
-      setPostCoverImage("/tech_2026_cover.png");
+      setPostContent(item.content || "");
+      setPostCoverImage(item.coverImage || null);
       setCurrentView("editor");
     } else if (activeTab === "categories") {
       setCategoryForm(item);
@@ -744,8 +758,13 @@ export default function AdminPage() {
     if (targetIdToDelete === null) return;
 
     if (activeTab === "posts") {
-      setPosts(posts.filter(p => p.id !== targetIdToDelete));
-      toast.success("Xóa bài viết thành công!");
+      try {
+        await deleteAdminArticle(targetIdToDelete);
+        toast.success("Xóa bài viết thành công!");
+        loadPosts();
+      } catch (err) {
+        toast.error("Lỗi khi xóa bài viết!");
+      }
     } else if (activeTab === "categories") {
       try {
         await deleteAdminCategory(targetIdToDelete);
@@ -769,20 +788,31 @@ export default function AdminPage() {
         toast.error("Vui lòng nhập tiêu đề bài viết!");
         return;
       }
-      if (dialogMode === "add") {
-        const newPost: Post = {
-          id: posts.length > 0 ? Math.max(...posts.map(p => p.id)) + 1 : 1,
+      try {
+        toast.loading(dialogMode === "add" ? "Đang thêm bài viết..." : "Đang cập nhật...", { id: "post-submit" });
+        const targetCategory = categories.find(c => c.name === postForm.category);
+        const payload = {
           title: postForm.title,
-          category: postForm.category || "Tin tức",
+          category_id: targetCategory ? targetCategory.id : undefined,
           views: Number(postForm.views) || 0,
-          status: postForm.status || "Đã đăng",
-          createdAt: postForm.createdAt || new Date().toISOString().split("T")[0]
+          status: postForm.status === "Đã đăng" ? "published" : "draft",
+          thumbnail_key: postCoverImage,
+          content: htmlToBlocks(postContent)
         };
-        setPosts([newPost, ...posts]);
-        toast.success("Thêm bài viết mới thành công!");
-      } else {
-        setPosts(posts.map(p => (p.id === editId ? { ...p, ...postForm } as Post : p)));
-        toast.success("Cập nhật bài viết thành công!");
+        
+        if (dialogMode === "add") {
+          await createAdminArticle(payload);
+          toast.success("Thêm bài viết mới thành công!", { id: "post-submit" });
+        } else {
+          if (editId) {
+            await updateAdminArticle(editId, payload);
+            toast.success("Cập nhật bài viết thành công!", { id: "post-submit" });
+          }
+        }
+        loadPosts();
+        setCurrentView("list");
+      } catch (err) {
+        toast.error("Có lỗi xảy ra, vui lòng thử lại!", { id: "post-submit" });
       }
     } else if (activeTab === "categories") {
       if (!categoryForm.name?.trim()) {
@@ -856,42 +886,39 @@ export default function AdminPage() {
     setSidebarOpen(false);
   };
 
-  const handleSavePost = (e: React.FormEvent) => {
+  const handleSavePost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!postForm.title?.trim()) {
       toast.error("Vui lòng nhập tiêu đề bài viết!");
       return;
     }
 
-    if (dialogMode === "add") {
-      const newPost: Post = {
-        id: posts.length > 0 ? Math.max(...posts.map(p => p.id)) + 1 : 1,
+    try {
+      toast.loading(dialogMode === "add" ? "Đang thêm bài viết..." : "Đang cập nhật...", { id: "post-submit" });
+      const targetCategory = categories.find(c => c.name === postForm.category);
+      const payload = {
         title: postForm.title,
-        category: postForm.category || "Tin tức",
-        views: 0,
-        status: postForm.status || "Đã đăng",
-        createdAt: postForm.createdAt || new Date().toISOString().split("T")[0],
-        content: postContent,
-        coverImage: postCoverImage || undefined
+        category_id: targetCategory ? targetCategory.id : undefined,
+        views: Number(postForm.views) || 0,
+        status: postForm.status === "Đã đăng" ? "published" : "draft",
+        thumbnail_key: postCoverImage,
+        content: htmlToBlocks(postContent)
       };
-      setPosts([newPost, ...posts]);
-      toast.success("Thêm bài viết mới thành công!");
-    } else {
-      setPosts(
-        posts.map(p =>
-          p.id === editId
-            ? ({
-                ...p,
-                ...postForm,
-                content: postContent,
-                coverImage: postCoverImage || undefined
-              } as Post)
-            : p
-        )
-      );
-      toast.success("Cập nhật bài viết thành công!");
+      
+      if (dialogMode === "add") {
+        await createAdminArticle(payload);
+        toast.success("Thêm bài viết mới thành công!", { id: "post-submit" });
+      } else {
+        if (editId) {
+          await updateAdminArticle(editId, payload);
+          toast.success("Cập nhật bài viết thành công!", { id: "post-submit" });
+        }
+      }
+      loadPosts();
+      setCurrentView("list");
+    } catch (err) {
+      toast.error("Có lỗi xảy ra, vui lòng thử lại!", { id: "post-submit" });
     }
-    setCurrentView("list");
   };
 
   const handleTriggerImageUpload = () => {

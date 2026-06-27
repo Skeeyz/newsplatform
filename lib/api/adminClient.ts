@@ -31,13 +31,13 @@ async function fetchAdmin<T>(path: string, options: RequestInit = {}): Promise<T
 }
 
 // ARTICLES
-export const getAdminArticles = () => fetchAdmin<any>("/articles");
+export const getAdminArticles = (qs = "") => fetchAdmin<any>(`/articles${qs}`);
 export const createAdminArticle = (data: any) => fetchAdmin<any>("/articles", { method: "POST", body: JSON.stringify(data) });
 export const updateAdminArticle = (id: number, data: any) => fetchAdmin<any>(`/articles/${id}`, { method: "PATCH", body: JSON.stringify(data) });
 export const deleteAdminArticle = (id: number) => fetchAdmin<any>(`/articles/${id}`, { method: "DELETE" });
 
 // CATEGORIES
-export const getAdminCategories = () => fetchAdmin<any>("/categories");
+export const getAdminCategories = (qs = "") => fetchAdmin<any>(`/categories${qs}`);
 export const createAdminCategory = (data: any) => fetchAdmin<any>("/categories", { method: "POST", body: JSON.stringify(data) });
 export const updateAdminCategory = (id: number, data: any) => fetchAdmin<any>(`/categories/${id}`, { method: "PATCH", body: JSON.stringify(data) });
 export const deleteAdminCategory = (id: number) => fetchAdmin<any>(`/categories/${id}`, { method: "DELETE" });
