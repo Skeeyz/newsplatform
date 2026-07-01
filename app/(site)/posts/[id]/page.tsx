@@ -221,13 +221,13 @@ export default async function PostDetailPage({ params }: PageProps) {
                   if (block.type === "paragraph") {
                     return (
                       <p key={index} className="text-gray-700 font-sans">
-                        {block.text}
+                        {block.text || block.content}
                       </p>
                     );
                   } else if (block.type === "bold-paragraph") {
                     return (
                       <p key={index} className="font-bold text-gray-900 font-sans">
-                        {block.text}
+                        {block.text || block.content}
                       </p>
                     );
                   } else if (block.type === "image") {
