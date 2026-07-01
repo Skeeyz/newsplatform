@@ -40,7 +40,7 @@ Thumbs.db
 # typecheck / build artifacts
 *.tsbuildinfo
 
-AGENTS.md
+# AGENTS.md
 API_WebTinTuc.md
 
 swagger.yaml
