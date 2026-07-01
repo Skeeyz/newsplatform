@@ -32,7 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
 
     // Articles — only published, not deleted
-    const articlesData = await articleService.listPublicArticles({ limit: 5000 });
+    const articlesData = await articleService.listPublicArticles({ limit: 1000 });
     const articles = articlesData?.items || [];
     for (const article of articles) {
       if (article.deleted_at || article.status !== 'published') continue;

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getCategoryFeed, getKnownCategorySlugs, getPublicAds } from "@/lib/api/news";
+import { getCategoryFeed, getPublicAds } from "@/lib/api/news";
 import { CategoryContent } from "@/components/CategoryContent";
 import type { CategoryFeed } from "@/lib/types/news";
 
@@ -28,11 +28,6 @@ const categoryDescriptions: Record<string, string> = {
 
 interface PageProps {
   params: Promise<{ category: string }>;
-}
-
-export async function generateStaticParams() {
-  const slugs = await getKnownCategorySlugs();
-  return slugs.map((category: string) => ({ category }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
