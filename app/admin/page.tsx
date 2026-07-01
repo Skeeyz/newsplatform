@@ -2747,7 +2747,7 @@ export default function AdminPage() {
                   {activeTab === "posts" && (
                     <table className="w-full min-w-[900px] text-left border-collapse">
                       <thead>
-                        <tr className="border-b border-gray-200 bg-gray-50/75 text-gray-500 font-bold text-xs uppercase tracking-wider">
+                        <tr className="border-b border-gray-200 bg-gray-50/75 text-gray-500 font-bold text-xs uppercase tracking-wider whitespace-nowrap">
                           <th className="py-4 px-6 w-16 text-center">ID</th>
                           <th className="py-4 px-4 min-w-[280px]">Tiêu đề bài viết</th>
                           <th className="py-4 px-4 w-40">Danh mục</th>
@@ -2760,11 +2760,13 @@ export default function AdminPage() {
                       <tbody className="divide-y divide-gray-150">
                         {paginatedPosts.length > 0 ? (
                           paginatedPosts.map((post) => (
-                            <tr key={post.id} className={`transition-colors text-sm font-medium ${post.isDeleted ? 'opacity-50 bg-red-50/20' : 'hover:bg-gray-50/50'}`}>
+                            <tr key={post.id} className={`transition-colors text-sm font-medium whitespace-nowrap ${post.isDeleted ? 'opacity-50 bg-red-50/20' : 'hover:bg-gray-50/50'}`}>
                               <td className="py-4 px-6 text-center text-gray-400 font-bold">{post.id}</td>
-                              <td className="py-4 px-4 text-gray-900 font-semibold line-clamp-2 max-w-[450px]">
-                                {post.title}
-                                {post.isDeleted && <span className="ml-2 px-2 py-0.5 text-[10px] bg-red-100 text-red-600 rounded whitespace-nowrap align-middle">Đã xóa</span>}
+                              <td className="py-4 px-4 whitespace-normal">
+                                <div className="text-gray-900 font-semibold line-clamp-2 max-w-[450px]">
+                                  {post.title}
+                                  {post.isDeleted && <span className="ml-2 px-2 py-0.5 text-[10px] bg-red-100 text-red-600 rounded whitespace-nowrap align-middle font-bold">Đã xóa</span>}
+                                </div>
                               </td>
                               <td className="py-4 px-4 text-gray-600">{post.category}</td>
                               <td className="py-4 px-4 text-right text-gray-900 font-mono font-bold">
@@ -2831,9 +2833,9 @@ export default function AdminPage() {
                   {activeTab === "categories" && (
                     <table className="w-full min-w-[800px] text-left border-collapse">
                       <thead>
-                        <tr className="border-b border-gray-200 bg-gray-50/75 text-gray-500 font-bold text-xs uppercase tracking-wider">
+                        <tr className="border-b border-gray-200 bg-gray-50/75 text-gray-500 font-bold text-xs uppercase tracking-wider whitespace-nowrap">
                           <th className="py-4 px-6 w-16 text-center">ID</th>
-                          <th className="py-4 px-4">Tên danh mục</th>
+                          <th className="py-4 px-4 min-w-[200px]">Tên danh mục</th>
                           <th className="py-4 px-4 w-44 text-right">Số bài viết</th>
                           <th className="py-4 px-4 w-40 text-center">Priority</th>
                           <th className="py-4 px-4 w-40 text-center">Trạng thái</th>
@@ -2843,9 +2845,9 @@ export default function AdminPage() {
                       <tbody className="divide-y divide-gray-150">
                         {paginatedCategories.length > 0 ? (
                           paginatedCategories.map((cat) => (
-                            <tr key={cat.id} className="hover:bg-gray-50/50 transition-colors text-sm font-medium">
+                            <tr key={cat.id} className="hover:bg-gray-50/50 transition-colors text-sm font-medium whitespace-nowrap">
                               <td className="py-4 px-6 text-center text-gray-400 font-bold">{cat.id}</td>
-                              <td className="py-4 px-4 text-gray-900 font-semibold">{cat.name}</td>
+                              <td className="py-4 px-4 text-gray-900 font-semibold whitespace-normal">{cat.name}</td>
                               <td className="py-4 px-4 text-right text-gray-900 font-mono font-bold">
                                 {cat.postCount}
                               </td>
@@ -2896,9 +2898,9 @@ export default function AdminPage() {
                   {activeTab === "ads" && (
                     <table className="w-full min-w-[950px] text-left border-collapse">
                       <thead>
-                        <tr className="border-b border-gray-200 bg-gray-50/75 text-gray-500 font-bold text-xs uppercase tracking-wider">
+                        <tr className="border-b border-gray-200 bg-gray-50/75 text-gray-500 font-bold text-xs uppercase tracking-wider whitespace-nowrap">
                           <th className="py-4 px-6 w-16 text-center">ID</th>
-                          <th className="py-4 px-4">Tên AD</th>
+                          <th className="py-4 px-4 min-w-[250px]">Tên AD</th>
                           <th className="py-4 px-4 w-36">Vị trí</th>
                           <th className="py-4 px-4 w-32 text-right">Clicks</th>
                           <th className="py-4 px-4 w-36 text-center">Thời gian BĐ</th>
@@ -2910,9 +2912,9 @@ export default function AdminPage() {
                       <tbody className="divide-y divide-gray-150">
                         {paginatedAds.length > 0 ? (
                           paginatedAds.map((ad) => (
-                            <tr key={ad.id} className="hover:bg-gray-50/50 transition-colors text-sm font-medium">
+                            <tr key={ad.id} className="hover:bg-gray-50/50 transition-colors text-sm font-medium whitespace-nowrap">
                               <td className="py-4 px-6 text-center text-gray-400 font-bold">{ad.id}</td>
-                              <td className="py-4 px-4">
+                              <td className="py-4 px-4 whitespace-normal">
                                 <div className="flex items-center gap-3">
                                   {ad.image ? (
                                     ad.link ? (
@@ -2935,8 +2937,8 @@ export default function AdminPage() {
                                       No Image
                                     </div>
                                   )}
-                                  <div className="flex flex-col">
-                                    <span className="text-gray-900 font-semibold">{ad.name}</span>
+                                  <div className="flex flex-col min-w-0">
+                                    <span className="text-gray-900 font-semibold truncate max-w-[200px]" title={ad.name}>{ad.name}</span>
                                     {ad.link ? (
                                       <a
                                         href={ad.link}
@@ -2944,7 +2946,7 @@ export default function AdminPage() {
                                         rel="noopener noreferrer"
                                         className="text-[10px] text-[#E55956] hover:underline flex items-center gap-0.5 mt-0.5 font-bold"
                                       >
-                                        <ExternalLink size={10} />
+                                        <ExternalLink size={10} className="flex-shrink-0" />
                                         <span className="truncate max-w-[150px]">{ad.link}</span>
                                       </a>
                                     ) : (
