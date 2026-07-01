@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Clock } from "lucide-react";
 import type { Article } from "@/lib/types/news";
 import { formatCategory } from "@/lib/utils";
@@ -56,7 +57,7 @@ export function CategoryContent({ category, label, featured, initialList, ads = 
       <AdBanner 
         position="header" 
         ads={ads} 
-        fallbackImg="/vinfast_ad.png" 
+        fallbackImg="/vinfast_ad.webp" 
         className="w-full md:w-[970px] rounded border border-gray-200 mb-5 bg-gray-50 shadow-sm mx-auto overflow-hidden aspect-[970/250] md:aspect-auto md:h-[250px]" 
       />
 
@@ -73,10 +74,12 @@ export function CategoryContent({ category, label, featured, initialList, ads = 
           <div className="flex gap-3.5 my-2.5 md:hidden overflow-x-auto scrollbar-none snap-x snap-mandatory">
             <div className="w-[46%] min-w-[140px] flex-shrink-0 snap-start relative overflow-hidden rounded border border-gray-200 bg-gray-50 shadow-xs aspect-[300/600]">
               <a href="#" className="block w-full h-full">
-                <img
-                  src="/zento_cabinet_ad.png"
+                <Image
+                  src="/zento_cabinet_ad.webp"
                   alt="Quảng cáo 1"
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 46vw, 300px"
+                  className="object-cover"
                 />
               </a>
               <div className="absolute top-1 right-1 bg-black/45 text-white/90 text-[8px] px-1 py-0.5 rounded-sm select-none z-10">
@@ -85,10 +88,12 @@ export function CategoryContent({ category, label, featured, initialList, ads = 
             </div>
             <div className="w-[46%] min-w-[140px] flex-shrink-0 snap-start relative overflow-hidden rounded border border-gray-200 bg-gray-50 shadow-xs aspect-[300/600]">
               <a href="#" className="block w-full h-full">
-                <img
-                  src="/ztc_bathtub_ad.png"
+                <Image
+                  src="/ztc_bathtub_ad.webp"
                   alt="Quảng cáo 2"
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 46vw, 300px"
+                  className="object-cover"
                 />
               </a>
               <div className="absolute top-1 right-1 bg-black/45 text-white/90 text-[8px] px-1 py-0.5 rounded-sm select-none z-10">
@@ -97,10 +102,12 @@ export function CategoryContent({ category, label, featured, initialList, ads = 
             </div>
             <div className="w-[46%] min-w-[140px] flex-shrink-0 snap-start relative overflow-hidden rounded border border-gray-200 bg-gray-50 shadow-xs aspect-[300/600]">
               <a href="#" className="block w-full h-full">
-                <img
-                  src="/zento_toilet_ad.png"
+                <Image
+                  src="/zento_toilet_ad.webp"
                   alt="Quảng cáo 3"
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 46vw, 300px"
+                  className="object-cover"
                 />
               </a>
               <div className="absolute top-1 right-1 bg-black/45 text-white/90 text-[8px] px-1 py-0.5 rounded-sm select-none z-10">
@@ -116,12 +123,13 @@ export function CategoryContent({ category, label, featured, initialList, ads = 
                 key={item.id}
                 href={`/posts/${item.id}`}
                 className="group flex gap-3.5 cursor-pointer pb-4 border-b border-gray-100 last:border-b-0 last:pb-0 transition-colors"
-              >
-                <div className="w-[110px] h-[75px] sm:w-[130px] sm:h-[88px] flex-shrink-0 overflow-hidden border border-gray-200 bg-gray-50 rounded-md md:rounded-sm">
-                  <img
+              >                <div className="relative w-[110px] h-[75px] sm:w-[130px] sm:h-[88px] flex-shrink-0 overflow-hidden border border-gray-200 bg-gray-50 rounded-md md:rounded-sm">
+                  <Image
                     src={item.image}
                     alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
+                    fill
+                    sizes="(max-width: 640px) 110px, 130px"
+                    className="object-cover group-hover:scale-103 transition-transform duration-300"
                   />
                 </div>
                 <div className="flex flex-col justify-between py-0.5 flex-1">
@@ -148,7 +156,7 @@ export function CategoryContent({ category, label, featured, initialList, ads = 
           <AdBanner 
               position="inline" 
               ads={ads} 
-              fallbackImg="/qc_650_300_premium.png" 
+              fallbackImg="/qc_650_300_premium.webp" 
               className="w-full rounded border border-gray-200 bg-gray-50 shadow-sm overflow-hidden aspect-[650/300]" 
             />
 
@@ -159,12 +167,13 @@ export function CategoryContent({ category, label, featured, initialList, ads = 
                 key={item.id}
                 href={`/posts/${item.id}`}
                 className="group flex gap-3.5 cursor-pointer pb-4 border-b border-gray-100 last:border-b-0 last:pb-0 transition-colors"
-              >
-                <div className="w-[110px] h-[75px] sm:w-[130px] sm:h-[88px] flex-shrink-0 overflow-hidden border border-gray-200 bg-gray-50 rounded-md md:rounded-sm">
-                  <img
+              >                <div className="relative w-[110px] h-[75px] sm:w-[130px] sm:h-[88px] flex-shrink-0 overflow-hidden border border-gray-200 bg-gray-50 rounded-md md:rounded-sm">
+                  <Image
                     src={item.image}
                     alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
+                    fill
+                    sizes="(max-width: 640px) 110px, 130px"
+                    className="object-cover group-hover:scale-103 transition-transform duration-300"
                   />
                 </div>
                 <div className="flex flex-col justify-between py-0.5 flex-1">
@@ -241,7 +250,7 @@ export function CategoryContent({ category, label, featured, initialList, ads = 
       <AdBanner 
         position="footer" 
         ads={ads} 
-        fallbackImg="/vietnam_airlines_ad.png" 
+        fallbackImg="/vietnam_airlines_ad.webp" 
         className="w-full md:w-[970px] mt-6 rounded border border-gray-200 bg-gray-50 shadow-sm mx-auto overflow-hidden aspect-[970/250] md:aspect-auto md:h-[250px]" 
       />
     </main>

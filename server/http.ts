@@ -22,8 +22,16 @@ export class ApiError extends Error {
   }
 }
 
+function withCacheControl(init?: ResponseInit, ttl = 60): ResponseInit {
+  const headers = new Headers(init?.headers);
+  if (!headers.has("Cache-Control")) {
+    headers.set("Cache-Control", `public, s-maxage=${ttl}, stale-while-revalidate=${ttl * 10}`);
+  }
+  return { ...init, headers };
+}
+
 export function ok<T>(data: T, init?: ResponseInit) {
-  return Response.json({ success: true, data }, init)
+  return Response.json({ success: true, data }, withCacheControl(init))
 }
 
 export function created<T>(data: T) {

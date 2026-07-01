@@ -17,7 +17,7 @@ export const mockArticles: Article[] = [
     title: "Ốc Mượn Hồn tung dàn poster nhân vật cực chất",
     category: "Phim",
     time: "27/05/2026 9:14",
-    image: "/oc_muon_hon_poster.png",
+    image: "/oc_muon_hon_poster.webp",
     badge: "Phim",
     intro: "Phim điện ảnh kinh dị kì bí 'Ốc Mượn Hồn' vừa tung bộ poster nhân vật chính thức hé lộ những tạo hình đầy ma mị và ám ảnh của dàn diễn viên tên tuổi.",
     content: [
@@ -27,7 +27,7 @@ export const mockArticles: Article[] = [
       },
       {
         type: "image",
-        src: "/oc_muon_hon_poster.png",
+        src: "/oc_muon_hon_poster.webp",
         caption: "Tạo hình ma mị đầy ám ảnh của nữ chính bên cạnh vỏ ốc mượn hồn cổ xưa"
       },
       {
@@ -168,7 +168,7 @@ export const mockArticles: Article[] = [
     title: "Tựa game kinh dị anime toàn gái xinh còn chưa ra mắt đã gây sốt, hơn 20.000 wishlist trên Steam, đã cho chơi thử miễn phí",
     category: "Game Steam",
     time: "2 giờ trước",
-    image: "/yandere_virus_cover.png",
+    image: "/yandere_virus_cover.webp",
     badge: "Game Steam",
     intro: "Lựa chọn của khá nhiều game thủ ưa thích các trò chơi anime là đây. Dù còn gần hai tháng nữa mới chính thức phát hành, Yandere Virus đã trở thành một trong những tựa game indie được chú ý nhất trên Steam. Sở hữu phong cách anime bắt mắt với dàn nhân vật nữ xinh đẹp cùng lối chơi kinh dị sinh tồn độc đáo, trò chơi hiện đã vượt mốc 20.000 lượt wishlist và vừa mở cửa bản demo miễn phí cho người chơi trải nghiệm.",
     content: [
@@ -182,7 +182,7 @@ export const mockArticles: Article[] = [
       },
       {
         type: "image",
-        src: "/yandere_virus_cover.png",
+        src: "/yandere_virus_cover.webp",
         caption: "Tựa game kinh dị anime toàn gái xinh còn chưa ra mắt đã gây sốt, hơn 20.000 wishlist trên Steam, đã cho chơi thử miễn phí - Ảnh 2."
       },
       {
@@ -191,12 +191,12 @@ export const mockArticles: Article[] = [
       },
       {
         type: "image",
-        src: "/yandere_virus_gameplay.png",
+        src: "/yandere_virus_gameplay.webp",
         caption: "Tựa game kinh dị anime toàn gái xinh còn chưa ra mắt đã gây sốt, hơn 20.000 wishlist trên Steam, đã cho chơi thử miễn phí - Ảnh 3."
       },
       {
         type: "image",
-        src: "/yandere_virus_graveyard.png",
+        src: "/yandere_virus_graveyard.webp",
         caption: "Tựa game kinh dị anime toàn gái xinh còn chưa ra mắt đã gây sốt, hơn 20.000 wishlist trên Steam, đã cho chơi thử miễn phí - Ảnh 4."
       },
       {
@@ -209,12 +209,12 @@ export const mockArticles: Article[] = [
       },
       {
         type: "image",
-        src: "/yandere_virus_gameplay.png",
+        src: "/yandere_virus_gameplay.webp",
         caption: "Tựa game kinh dị anime toàn gái xinh còn chưa ra mắt đã gây sốt, hơn 20.000 wishlist trên Steam, đã cho chơi thử miễn phí - Ảnh 5."
       },
       {
         type: "image",
-        src: "/yandere_virus_cover.png",
+        src: "/yandere_virus_cover.webp",
         caption: "Tựa game kinh dị anime toàn gái xinh còn chưa ra mắt đã gây sốt, hơn 20.000 wishlist trên Steam, đã cho chơi thử miễn phí - Ảnh 6."
       },
       {
@@ -228,7 +228,7 @@ export const mockArticles: Article[] = [
     title: "Hào hứng trải nghiệm beta sớm của GTA 6, hàng loạt game thủ nhận cái kết \"trong mơ cũng không nghĩ tới\"",
     category: "GTA 6",
     time: "1 giờ trước",
-    image: "/gta6_beta.png",
+    image: "/gta6_beta.webp",
     badge: "GTA 6"
   },
   {
@@ -236,7 +236,7 @@ export const mockArticles: Article[] = [
     title: "HLE vào nhánh thắng Road to MSI 2026 nhưng cũng khiến fan dấy lên nỗi lo",
     category: "Liên Minh Huyền Thoại",
     time: "3 giờ trước",
-    image: "/esports_news.png",
+    image: "/esports_news.webp",
     badge: "Liên Minh Huyền Thoại"
   },
   {
@@ -244,7 +244,7 @@ export const mockArticles: Article[] = [
     title: "Video Trần Hà Linh bị \"giật tóc\" thu hút gần 8 triệu lượt xem, CĐM tò mò đi tìm nguyên nhân",
     category: "Đời sống",
     time: "5 giờ trước",
-    image: "/video_news.png"
+    image: "/video_news.webp"
   },
   // Main Articles
   {

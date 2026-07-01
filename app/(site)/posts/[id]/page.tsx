@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
   getArticleById,
@@ -9,8 +11,66 @@ import { Clock, Link2, Star } from "lucide-react";
 import { formatCategory } from "@/lib/utils";
 import AdBanner from "@/components/AdBanner";
 
+export const revalidate = 60;
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com";
+
 interface PageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const article = await getArticleById(id);
+
+  if (!article) {
+    return {
+      title: "Bài viết không tồn tại",
+    };
+  }
+
+  const title = article.title;
+  const description = article.intro || `Đọc bài viết ${article.title} trên WebTinTuc. Cập nhật tin tức mới nhất về ${article.category.toLowerCase()}.`;
+  const imageUrl = article.image || `${siteUrl}/screen-3.webp`;
+  const categorySlug = article.categorySlug || article.category;
+  const url = `/posts/${id}`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      type: "article",
+      title,
+      description,
+      url,
+      siteName: "WebTinTuc",
+      locale: "vi_VN",
+      publishedTime: article.time,
+      modifiedTime: article.time,
+      section: article.category,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: article.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [imageUrl],
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
 }
 
 export default async function PostDetailPage({ params }: PageProps) {
@@ -23,6 +83,57 @@ export default async function PostDetailPage({ params }: PageProps) {
 
   const { relatedPosts, likePosts } = await getPostRecommendations(id);
   const ads = await getPublicAds();
+
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "@id": `${siteUrl}/posts/${id}#article`,
+    headline: article.title,
+    description: article.intro || article.title,
+    image: article.image || `${siteUrl}/screen-3.webp`,
+    datePublished: article.time,
+    dateModified: article.time,
+    author: {
+      "@type": "Organization",
+      name: "WebTinTuc",
+      url: siteUrl,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "WebTinTuc",
+      url: siteUrl,
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${siteUrl}/posts/${id}`,
+    },
+    articleSection: article.category,
+    inLanguage: "vi",
+  };
+
+  const articleBreadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Trang chủ",
+        item: siteUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: article.category,
+        item: `${siteUrl}/${article.categorySlug || article.category}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: article.title,
+      },
+    ],
+  };
 
   // Determine if content is array of blocks or HTML string
   const isBlocksArray = Array.isArray(article.content);
@@ -38,12 +149,21 @@ export default async function PostDetailPage({ params }: PageProps) {
   }
 
   return (
-    <main className="w-full px-3 md:px-0 py-4 font-sans text-xs">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleBreadcrumbJsonLd) }}
+      />
+      <main className="w-full px-3 md:px-0 py-4 font-sans text-xs">
       {/* Top Banner Advertisement (QC 970x250) */}
       <AdBanner 
         position="header" 
         ads={ads} 
-        fallbackImg="/vinfast_ad.png" 
+        fallbackImg="/vinfast_ad.webp" 
         className="w-full md:w-[970px] rounded border border-gray-200 mb-5 bg-gray-50 shadow-sm mx-auto overflow-hidden aspect-[970/250] md:aspect-auto md:h-[250px]" 
       />
 
@@ -111,11 +231,13 @@ export default async function PostDetailPage({ params }: PageProps) {
                     return (
                       <div key={index} className="my-4 space-y-1.5 mx-auto" style={{ maxWidth: width }}>
                         <div className="border border-gray-200 overflow-hidden bg-gray-50 rounded-md md:rounded-sm">
-                          <img
+                          <Image
                             src={block.src}
                             alt={block.caption || "Hình ảnh bài viết"}
+                            width={650}
+                            height={400}
                             className="w-full h-auto object-cover max-h-[500px] mx-auto"
-                            loading="lazy"
+                            sizes="(max-width: 768px) 100vw, 650px"
                           />
                         </div>
                         {block.caption && (
@@ -147,7 +269,7 @@ export default async function PostDetailPage({ params }: PageProps) {
                         key={index}
                         position="inline" 
                         ads={ads} 
-                        fallbackImg="/qc_650_300_premium.png" 
+                        fallbackImg="/qc_650_300_premium.webp" 
                         className="w-full rounded border border-gray-200 bg-gray-50 shadow-sm my-5 overflow-hidden aspect-[650/300]" 
                       />
                     );
@@ -163,7 +285,7 @@ export default async function PostDetailPage({ params }: PageProps) {
               <AdBanner 
                 position="inline" 
                 ads={ads} 
-                fallbackImg="/qc_650_300_premium.png" 
+                fallbackImg="/qc_650_300_premium.webp" 
                 className="hidden md:flex w-full rounded border border-gray-200 bg-gray-50 shadow-sm overflow-hidden aspect-[650/300]" 
               />
 
@@ -172,19 +294,19 @@ export default async function PostDetailPage({ params }: PageProps) {
                 <AdBanner 
                   position="sidebar_1" 
                   ads={ads} 
-                  fallbackImg="/zento_cabinet_ad.png" 
+                  fallbackImg="/zento_cabinet_ad.webp" 
                   className="w-[46%] min-w-[140px] flex-shrink-0 snap-start rounded border border-gray-200 bg-gray-50 shadow-xs overflow-hidden aspect-[300/600]" 
                 />
                 <AdBanner 
                   position="sidebar_2" 
                   ads={ads} 
-                  fallbackImg="/ztc_bathtub_ad.png" 
+                  fallbackImg="/ztc_bathtub_ad.webp" 
                   className="w-[46%] min-w-[140px] flex-shrink-0 snap-start rounded border border-gray-200 bg-gray-50 shadow-xs overflow-hidden aspect-[300/600]" 
                 />
                 <AdBanner 
                   position="sidebar_3" 
                   ads={ads} 
-                  fallbackImg="/zento_toilet_ad.png" 
+                  fallbackImg="/zento_toilet_ad.webp" 
                   className="w-[46%] min-w-[140px] flex-shrink-0 snap-start rounded border border-gray-200 bg-gray-50 shadow-xs overflow-hidden aspect-[300/600]" 
                 />
               </div>
@@ -209,10 +331,12 @@ export default async function PostDetailPage({ params }: PageProps) {
                       >
                         <Link href={`/posts/${item.id}`} className="block">
                           <div className="relative aspect-video w-full overflow-hidden bg-gray-100 rounded-md md:rounded-sm border border-gray-200">
-                            <img
+                            <Image
                               src={item.image}
                               alt={item.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              fill
+                              sizes="(max-width: 768px) 100vw, 300px"
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                           </div>
                         </Link>
@@ -260,10 +384,12 @@ export default async function PostDetailPage({ params }: PageProps) {
                       >
                         <Link href={`/posts/${item.id}`} className="block">
                           <div className="relative aspect-video w-full overflow-hidden bg-gray-100 rounded-md md:rounded-sm border border-gray-200">
-                            <img
+                            <Image
                               src={item.image}
                               alt={item.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              fill
+                              sizes="(max-width: 768px) 100vw, 300px"
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                           </div>
                         </Link>
@@ -303,7 +429,7 @@ export default async function PostDetailPage({ params }: PageProps) {
           <AdBanner 
             position="sidebar_1" 
             ads={ads} 
-            fallbackImg="/zento_cabinet_ad.png" 
+            fallbackImg="/zento_cabinet_ad.webp" 
             className="w-full md:w-[300px] md:h-[600px] rounded border border-gray-200 bg-gray-50 shadow-sm mx-auto overflow-hidden" 
           />
 
@@ -311,7 +437,7 @@ export default async function PostDetailPage({ params }: PageProps) {
           <AdBanner 
             position="sidebar_3" 
             ads={ads} 
-            fallbackImg="/zento_toilet_ad.png" 
+            fallbackImg="/zento_toilet_ad.webp" 
             className="w-full md:w-[300px] md:h-[600px] rounded border border-gray-200 bg-gray-50 shadow-sm mx-auto overflow-hidden" 
           />
         </aside>
@@ -321,9 +447,10 @@ export default async function PostDetailPage({ params }: PageProps) {
       <AdBanner 
         position="footer" 
         ads={ads} 
-        fallbackImg="/vietnam_airlines_ad.png" 
+        fallbackImg="/vietnam_airlines_ad.webp" 
         className="w-full md:w-[970px] rounded border border-gray-200 mt-6 bg-gray-50 shadow-sm mx-auto overflow-hidden aspect-[970/250] md:aspect-auto md:h-[250px]" 
       />
     </main>
+    </>
   );
 }

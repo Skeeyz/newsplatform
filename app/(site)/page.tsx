@@ -1,10 +1,46 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { getHomeFeed } from "@/lib/api/news";
 import { Clock } from "lucide-react";
 import { formatCategory } from "@/lib/utils";
 import { FeaturedCarousel } from "@/components/FeaturedCarousel";
 import { getPublicAds } from "@/lib/api/news";
 import AdBanner from "@/components/AdBanner";
+
+export const revalidate = 60;
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com";
+
+export const metadata: Metadata = {
+  title: "Trang chủ",
+  description: "WebTinTuc - Trang tin tức tổng hợp hàng đầu. Cập nhật nhanh chóng các tin tức mới nhất về game, anime, công nghệ, phim ảnh và kiến thức.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    title: "WebTinTuc - Tin tức, Game, Anime, Công nghệ mới nhất",
+    description: "WebTinTuc - Trang tin tức tổng hợp hàng đầu. Cập nhật nhanh chóng các tin tức mới nhất về game, anime, công nghệ, phim ảnh và kiến thức.",
+    url: "/",
+    siteName: "WebTinTuc",
+    locale: "vi_VN",
+    images: [
+      {
+        url: `${siteUrl}/screen-3.webp`,
+        width: 1200,
+        height: 630,
+        alt: "WebTinTuc",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "WebTinTuc - Tin tức, Game, Anime, Công nghệ mới nhất",
+    description: "WebTinTuc - Trang tin tức tổng hợp hàng đầu. Cập nhật nhanh chóng các tin tức mới nhất về game, anime, công nghệ, phim ảnh và kiến thức.",
+    images: [`${siteUrl}/screen-3.webp`],
+  },
+};
 
 export default async function HomePage() {
   const { featuredArticle, latestArticles } = await getHomeFeed();
@@ -35,7 +71,7 @@ export default async function HomePage() {
       <AdBanner 
         position="header" 
         ads={ads} 
-        fallbackImg="/vietnam_airlines_ad.png" 
+        fallbackImg="/vietnam_airlines_ad.webp" 
         className="w-full md:w-[970px] rounded border border-gray-200 bg-gray-50 shadow-sm mx-auto overflow-hidden aspect-[970/250] md:aspect-auto md:h-[250px]" 
       />
 
@@ -54,19 +90,19 @@ export default async function HomePage() {
             <AdBanner 
               position="sidebar_1" 
               ads={ads} 
-              fallbackImg="/zento_cabinet_ad.png" 
+              fallbackImg="/zento_cabinet_ad.webp" 
               className="w-[46%] min-w-[140px] flex-shrink-0 snap-start rounded border border-gray-200 bg-gray-50 shadow-xs overflow-hidden aspect-[300/600]" 
             />
             <AdBanner 
               position="sidebar_2" 
               ads={ads} 
-              fallbackImg="/ztc_bathtub_ad.png" 
+              fallbackImg="/ztc_bathtub_ad.webp" 
               className="w-[46%] min-w-[140px] flex-shrink-0 snap-start rounded border border-gray-200 bg-gray-50 shadow-xs overflow-hidden aspect-[300/600]" 
             />
             <AdBanner 
               position="sidebar_3" 
               ads={ads} 
-              fallbackImg="/zento_toilet_ad.png" 
+              fallbackImg="/zento_toilet_ad.webp" 
               className="w-[46%] min-w-[140px] flex-shrink-0 snap-start rounded border border-gray-200 bg-gray-50 shadow-xs overflow-hidden aspect-[300/600]" 
             />
           </div>
@@ -96,10 +132,12 @@ export default async function HomePage() {
                         href={`/posts/${article.id}`}
                         className="relative w-[130px] h-[82px] sm:w-[220px] sm:h-[138px] flex-shrink-0 overflow-hidden border border-gray-200 bg-gray-50 rounded-md md:rounded-sm block"
                       >
-                        <img
+                        <Image
                           src={article.image || "/placeholder.svg"}
                           alt={article.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          fill
+                          sizes="(max-width: 640px) 130px, 220px"
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </Link>
 
@@ -144,7 +182,7 @@ export default async function HomePage() {
                 <AdBanner 
                   position="inline" 
                   ads={ads} 
-                  fallbackImg="/qc_650_300_premium.png" 
+                  fallbackImg="/qc_650_300_premium.webp" 
                   className="w-full rounded border border-gray-200 bg-gray-50 shadow-sm overflow-hidden aspect-[650/300]" 
                 />
               )}
@@ -159,7 +197,7 @@ export default async function HomePage() {
           <AdBanner 
             position="sidebar_1" 
             ads={ads} 
-            fallbackImg="/zento_cabinet_ad.png" 
+            fallbackImg="/zento_cabinet_ad.webp" 
             className="w-full md:w-[300px] md:h-[600px] rounded border border-gray-200 bg-gray-50 shadow-sm mx-auto overflow-hidden" 
           />
 
@@ -167,7 +205,7 @@ export default async function HomePage() {
           <AdBanner 
             position="sidebar_2" 
             ads={ads} 
-            fallbackImg="/ztc_bathtub_ad.png" 
+            fallbackImg="/ztc_bathtub_ad.webp" 
             className="w-full md:w-[300px] md:h-[600px] rounded border border-gray-200 bg-gray-50 shadow-sm mx-auto overflow-hidden" 
           />
 
@@ -175,7 +213,7 @@ export default async function HomePage() {
           <AdBanner 
             position="sidebar_3" 
             ads={ads} 
-            fallbackImg="/zento_toilet_ad.png" 
+            fallbackImg="/zento_toilet_ad.webp" 
             className="w-full md:w-[300px] md:h-[600px] rounded border border-gray-200 bg-gray-50 shadow-sm mx-auto overflow-hidden" 
           />
         </div>
@@ -185,7 +223,7 @@ export default async function HomePage() {
       <AdBanner 
         position="footer" 
         ads={ads} 
-        fallbackImg="/vietnam_airlines_ad.png" 
+        fallbackImg="/vietnam_airlines_ad.webp" 
         className="w-full md:w-[970px] rounded border border-gray-200 bg-gray-50 shadow-sm mx-auto mt-4 overflow-hidden aspect-[970/250] md:aspect-auto md:h-[250px]" 
       />
     </main>

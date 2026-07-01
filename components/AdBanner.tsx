@@ -126,6 +126,8 @@ export default function AdBanner({
                     src={ad.media_key || fallbackImg}
                     alt={`Quảng cáo ${position}`}
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </a>
               )}
@@ -143,6 +145,8 @@ export default function AdBanner({
                 src={fallbackImg}
                 alt={`Quảng cáo ${position}`}
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
               />
             </a>
           </div>

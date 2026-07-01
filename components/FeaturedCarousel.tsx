@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 
 import { formatCategory } from "@/lib/utils";
@@ -72,10 +73,13 @@ export function FeaturedCarousel({ articles }: FeaturedCarouselProps) {
                 isActive ? "opacity-100 z-10 pointer-events-auto" : "opacity-0 z-0 pointer-events-none"
               }`}
             >
-              <img
+              <Image
                 src={article.image || "/placeholder.svg"}
                 alt={article.title}
-                className="w-full h-full object-cover transform scale-100 hover:scale-[1.02] transition-transform duration-700 ease-out"
+                fill
+                sizes="(max-width: 768px) 100vw, 650px"
+                className="object-cover hover:scale-[1.02] transition-transform duration-700 ease-out"
+                priority={idx === 0}
               />
               
               {/* Subtle Dark Gradient Overlay at the Bottom for Contrast */}
