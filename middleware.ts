@@ -1,30 +1,50 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 
-const redirectCache = new Map<string, { to_path: string; status_code: number; cachedAt: number }>();
+interface RedirectEntry {
+  to_path: string;
+  status_code: number;
+}
+
+const redirectCache = new Map<string, { data: RedirectEntry; cachedAt: number }>();
 const CACHE_TTL_MS = 60_000;
 
-async function lookupRedirect(path: string) {
+async function lookupRedirect(path: string): Promise<RedirectEntry | null> {
   const now = Date.now();
   const cached = redirectCache.get(path);
 
   if (cached && now - cached.cachedAt < CACHE_TTL_MS) {
-    return cached;
+    return cached.data;
   }
 
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("redirects")
-    .select("to_path, status_code")
-    .eq("from_path", path)
-    .maybeSingle();
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (data) {
-    redirectCache.set(path, { ...data, cachedAt: now });
-    return data;
+    if (!supabaseUrl || !supabaseKey) return null;
+
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/redirects?from_path=eq.${encodeURIComponent(path)}&select=to_path,status_code`,
+      {
+        headers: {
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`,
+        },
+      },
+    );
+
+    if (!response.ok) return null;
+
+    const data: RedirectEntry[] = await response.json();
+    const entry = data[0] ?? null;
+
+    if (entry) {
+      redirectCache.set(path, { data: entry, cachedAt: now });
+    }
+
+    return entry;
+  } catch {
+    return null;
   }
-
-  return null;
 }
 
 export async function middleware(request: NextRequest) {
@@ -41,14 +61,10 @@ export async function middleware(request: NextRequest) {
 
   if (skip) return NextResponse.next();
 
-  try {
-    const redirect = await lookupRedirect(pathname);
-    if (redirect) {
-      const destination = new URL(redirect.to_path, request.url);
-      return NextResponse.redirect(destination, { status: redirect.status_code });
-    }
-  } catch {
-    // Keep the site available if redirect lookup fails.
+  const redirect = await lookupRedirect(pathname);
+  if (redirect) {
+    const destination = new URL(redirect.to_path, request.url);
+    return NextResponse.redirect(destination, { status: redirect.status_code });
   }
 
   return NextResponse.next();
@@ -56,6 +72,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\.(?:png|jpg|jpeg|gif|webp|avif|svg|ico|css|js|woff2?)).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|webp|avif|svg|ico|css|js|woff2?)).*)",
   ],
 };
