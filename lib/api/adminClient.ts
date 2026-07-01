@@ -12,7 +12,7 @@ async function fetchAdmin<T>(path: string, options: RequestInit = {}): Promise<T
     ...(options.headers || {}),
   };
 
-  const response = await fetch(url, { ...options, headers });
+  const response = await fetch(url, { cache: "no-store", ...options, headers });
   
   if (!response.ok) {
     let message = `API Error: ${response.statusText}`;
@@ -56,7 +56,7 @@ export const getAdminSettings = () => fetchAdmin<any>("/settings");
 export const updateAdminSettings = (data: any) => fetchAdmin<any>("/settings", { method: "PATCH", body: JSON.stringify(data) });
 
 // STORAGE / MEDIA
-export const getAdminMedia = (prefix: string = "") => fetchAdmin<any>(`/storage?prefix=${encodeURIComponent(prefix)}`);
+export const getAdminMedia = (prefix: string = "", recursive: boolean = false) => fetchAdmin<any>(`/storage?prefix=${encodeURIComponent(prefix)}&recursive=${recursive}`);
 
 export async function uploadAdminMedia(formData: FormData) {
   const url = `${API_BASE_URL}/admin/storage`;
@@ -84,3 +84,9 @@ export async function uploadAdminMedia(formData: FormData) {
 }
 
 export const deleteAdminMedia = (key: string) => fetchAdmin<any>(`/storage?key=${encodeURIComponent(key)}`, { method: "DELETE" });
+
+export const moveAdminMedia = (fromKey: string, toKey: string) => fetchAdmin<any>("/storage/move", { method: "POST", body: JSON.stringify({ fromKey, toKey }) });
+
+export const createAdminFolder = (folderName: string, parentPrefix: string = "") => fetchAdmin<any>("/storage/folder", { method: "POST", body: JSON.stringify({ folderName, parentPrefix }) });
+
+export const getAdminDashboardStats = () => fetchAdmin<any>("/dashboard");
